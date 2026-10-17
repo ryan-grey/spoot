@@ -60,6 +60,7 @@ Sync and import:
 | Tool | What it does |
 | --- | --- |
 | `sync_bot(guild?, full=false, max_pages=20)` | Pull new messages from the bot's servers. Incremental; `full=true` re-reads from the start. |
+| `sync_channel(channel_id, full=false, max_pages=20)` | Refresh one server channel, including embeds. For old cards, use `full=true` once, then `full=false` while `more=true`. |
 | `import_export(zip_path)` | Load the official data package as `source=export`. Idempotent; never overwrites rows the bot already saw. |
 | `sync_local()` | Pull from the optional local capture database, if present. |
 
@@ -76,8 +77,18 @@ with a message that says why — there is no permitted way to send, edit or
 delete as your own account — rather than failing obscurely.
 
 Messages come back as `id`, `source`, local ISO `time`, `guild`, `channel`,
-`author`, `content`, `attachments` (names and URLs only; nothing is
-downloaded), `edited` and `deleted`.
+`author`, `content`, `message_content`, `embeds`, `attachments`, `edited` and
+`deleted`. `content` contains the original body plus readable `[Embed]` sections:
+titles, descriptions, fields, author/footer text, and card/media links. All of it
+is searchable. `message_content` preserves the original body, and `embeds`
+preserves the structured Discord embeds (null means not captured; [] means none).
+Attachments retain names and URLs. Images are not downloaded or OCR'd.
+
+The index migrates automatically without deleting history. Existing posts must
+be fetched again to recover previously omitted embeds; `sync_channel` supports
+a bounded, resumable backfill. Incremental sync only discovers new message IDs;
+use a full channel refresh to recover edits to older cards. Restart existing MCP
+connections after a code update to load the new importer and tools.
 
 ## Setup
 

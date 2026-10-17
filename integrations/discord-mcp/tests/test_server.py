@@ -36,6 +36,11 @@ def _j(s):
 
 
 def setup_module(_=None):
+    # Pin paths even if another test imported server before setting these envs.
+    # Test collection order must never redirect fixture writes to the real index.
+    server.INDEX_DB = Path(os.environ["DISCORD_INDEX_DB"])
+    server.CHANGES_LOG = Path(os.environ["DISCORD_CHANGES_LOG"])
+    server.LOCAL_DB = Path(os.environ["DISCORD_LOCAL_DB"])
     if os.path.exists(os.environ["DISCORD_INDEX_DB"]):
         os.remove(os.environ["DISCORD_INDEX_DB"])
     FAKE.__init__()

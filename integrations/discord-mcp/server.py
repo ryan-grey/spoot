@@ -161,10 +161,52 @@ def _index_con():
     import sqlite3
 
     INDEX_DB.parent.mkdir(parents=True, exist_ok=True)
-    con = sqlite3.connect(INDEX_DB)
+    con = sqlite3.connect(INDEX_DB, timeout=30)
     con.row_factory = sqlite3.Row
     con.executescript(SCHEMA)
+    # Additive migration: existing readers can still search/read `content`.
+    # Keep the original message body separately from the readable embed text.
+    columns = {r["name"] for r in con.execute("PRAGMA table_info(messages)")}
+    if {"embeds", "message_content"} <= columns:
+        return con
+    try:
+        con.execute("BEGIN IMMEDIATE")
+        columns = {r["name"] for r in con.execute("PRAGMA table_info(messages)")}
+        if "embeds" not in columns:
+            con.execute("ALTER TABLE messages ADD COLUMN embeds TEXT")
+        if "message_content" not in columns:
+            con.execute("ALTER TABLE messages ADD COLUMN message_content TEXT")
+            con.execute("UPDATE messages SET message_content = content")
+        con.commit()
+    except Exception:
+        con.rollback()
+        con.close()
+        raise
     return con
+
+
+def _embed_text(embeds):
+    """Readable, searchable embed text and media links; never OCR or fetch media."""
+    parts = []
+    for embed in embeds:
+        lines = []
+        def add(value):
+            if isinstance(value, str) and value and value not in lines:
+                lines.append(value)
+        add((embed.get("author") or {}).get("name"))
+        add(embed.get("title"))
+        add(embed.get("description"))
+        for field in embed.get("fields") or []:
+            add(field.get("name"))
+            add(field.get("value"))
+        add((embed.get("footer") or {}).get("text"))
+        add(embed.get("url"))
+        for kind in ("image", "thumbnail", "video"):
+            media = embed.get(kind) or {}
+            add(media.get("url") or media.get("proxy_url"))
+        if lines:
+            parts.append("[Embed]\n" + "\n".join(lines))
+    return "\n\n".join(parts)
 
 
 def _upsert_guild(con, gid, name, source):
@@ -210,21 +252,28 @@ def _upsert_message(con, m):
     lower one; a lower-ranked source never clobbers a higher one, so
     re-importing the export after a bot sync changes nothing."""
     existing = con.execute(
-        "SELECT source FROM messages WHERE id = ?", (int(m["id"]),)
+        "SELECT source, embeds FROM messages WHERE id = ?", (int(m["id"]),)
     ).fetchone()
     if existing and SOURCE_RANK[existing["source"]] > SOURCE_RANK[m["source"]]:
         return "kept"
+    # A source that never captured embeds cannot authoritatively remove them.
+    embeds = m.get("embeds") if "embeds" in m else (
+        json.loads(existing["embeds"]) if existing and existing["embeds"] else None
+    )
+    body = m.get("content") or ""
+    content = "\n\n".join(p for p in (body, _embed_text(embeds or [])) if p)
     con.execute(
         """INSERT INTO messages(id, source, guild_id, channel_id, author_id,
                                 author_name, content, ts, edited_ts,
-                                attachments, deleted)
-           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                                attachments, deleted, embeds, message_content)
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
            ON CONFLICT(id) DO UPDATE SET
              source = excluded.source, guild_id = excluded.guild_id,
              channel_id = excluded.channel_id, author_id = excluded.author_id,
              author_name = excluded.author_name, content = excluded.content,
              ts = excluded.ts, edited_ts = excluded.edited_ts,
-             attachments = excluded.attachments, deleted = excluded.deleted""",
+             attachments = excluded.attachments, deleted = excluded.deleted,
+             embeds = excluded.embeds, message_content = excluded.message_content""",
         (
             int(m["id"]),
             m["source"],
@@ -232,11 +281,13 @@ def _upsert_message(con, m):
             str(m["channel_id"]),
             str(m["author_id"]) if m.get("author_id") else None,
             m.get("author_name"),
-            m.get("content") or "",
+            content,
             m.get("ts") or _snowflake_ms(m["id"]),
             m.get("edited_ts"),
             json.dumps(m.get("attachments") or []),
             1 if m.get("deleted") else 0,
+            json.dumps(embeds) if embeds is not None else None,
+            body,
         ),
     )
     return "updated" if existing else "inserted"
@@ -264,6 +315,8 @@ def _shape(rows):
             "author": r["author_name"],
             "author_id": r["author_id"],
             "content": r["content"],
+            "message_content": r["message_content"],
+            "embeds": json.loads(r["embeds"]) if r["embeds"] is not None else None,
             "attachments": json.loads(r["attachments"] or "[]"),
             "edited": _ts(r["edited_ts"]) if r["edited_ts"] else None,
             "deleted": bool(r["deleted"]),
@@ -394,6 +447,7 @@ def _bot_message(m, guild_id):
         "author_id": author.get("id"),
         "author_name": author.get("global_name") or author.get("username"),
         "content": m.get("content") or "",
+        "embeds": m.get("embeds") or [],
         "ts": _ms(m["timestamp"]) if m.get("timestamp") else _snowflake_ms(m["id"]),
         "edited_ts": _ms(m["edited_timestamp"]) if m.get("edited_timestamp") else None,
         "attachments": [
@@ -420,7 +474,7 @@ def _sync_channel(con, ch, guild_id, max_pages):
             shaped = _bot_message(m, guild_id)
             _upsert_message(con, shaped)
             fetched += 1
-            if not shaped["content"] and not shaped["attachments"]:
+            if not shaped["content"] and not shaped["attachments"] and not shaped["embeds"]:
                 empty += 1
             after = max(after, int(m["id"]))
         con.execute("UPDATE channels SET last_synced_id = ? WHERE id = ?", (after, cid))
@@ -738,6 +792,32 @@ def sync_bot(guild: str = "", full: bool = False, max_pages: int = 20) -> str:
         con.close()
 
 
+def sync_channel(channel_id: str, full: bool = False, max_pages: int = 20) -> str:
+    """Refresh one bot-accessible server channel, including embed text and images.
+
+    Use full=true once to backfill old cards. If more=true, continue with
+    full=false until complete. This reads Discord and only writes the local index.
+    """
+    if max_pages < 1:
+        return json.dumps({"error": "max_pages must be at least 1"})
+    try:
+        ch = _api("GET", f"/channels/{channel_id}")
+    except RuntimeError as e:
+        return json.dumps({"error": str(e)})
+    if not ch.get("guild_id") or ch.get("type") not in TEXT_TYPES | THREAD_TYPES:
+        return json.dumps({"error": "only bot-accessible server text channels are supported"})
+    con = _index_con()
+    try:
+        _upsert_channel(con, ch["id"], ch["guild_id"], ch.get("name"), ch["type"], "bot")
+        if full:
+            con.execute("UPDATE channels SET last_synced_id = 0 WHERE id = ?", (str(ch["id"]),))
+        result = _sync_channel(con, ch, ch["guild_id"], max_pages)
+        con.commit()
+        return json.dumps({"channel_id": str(ch["id"]), **result})
+    finally:
+        con.close()
+
+
 def import_export(zip_path: str) -> str:
     """Load Discord's official data package (the ZIP from Settings > Data &
     Privacy > Request my data) into the index as source=export. It holds
@@ -845,6 +925,11 @@ def sync_local() -> str:
             m = dict(r)
             m["source"] = "local"
             m["attachments"] = json.loads(m.get("attachments") or "[]")
+            if "embeds" in m:
+                if m["embeds"] is None:
+                    del m["embeds"]
+                else:
+                    m["embeds"] = json.loads(m["embeds"])
             _upsert_message(con, m)
             newest = max(newest, int(m["rev"]))
             n += 1
@@ -953,8 +1038,8 @@ def edit_message(channel_id: str, message_id: str, text: str, confirm: bool = Fa
             return json.dumps(refusal)
         ch = _channel_row(con, channel_id)
         cid = ch["id"] if ch else str(channel_id)
-        old = con.execute("SELECT content FROM messages WHERE id = ?", (int(message_id),)).fetchone()
-        before = old["content"] if old else None
+        old = con.execute("SELECT message_content FROM messages WHERE id = ?", (int(message_id),)).fetchone()
+        before = old["message_content"] if old else None
         try:
             m = _api("PATCH", f"/channels/{cid}/messages/{message_id}", {"content": text})
         except RuntimeError as e:
@@ -1009,6 +1094,7 @@ for _fn in (
     list_channels,
     index_status,
     sync_bot,
+    sync_channel,
     import_export,
     sync_local,
     send_message,
