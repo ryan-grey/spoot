@@ -89,7 +89,7 @@ that make it trustworthy in a live channel.
    with zero special-casing.
 3. Upstream budgeting/caching layer; load-test the fan-out with synthetic tenants.
 4. Public listing: Discord App Directory requirements, terms/privacy pages
-   (greybot-terms.html / greybot-privacy.html already exist on ryangrey.dev),
+   (spoot-terms.html / spoot-privacy.html already exist on ryangrey.dev),
    support server (Ryan's planned GREY-tag server is its home).
 5. Per-tenant health surfaces + quotas.
 

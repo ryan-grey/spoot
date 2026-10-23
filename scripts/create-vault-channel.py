@@ -49,7 +49,7 @@ def call(method, path, bot, body=None):
         f"https://discord.com/api/v10{path}", method=method,
         data=json.dumps(body).encode() if body is not None else None,
         headers={"Authorization": f"Bot {bot}", "Content-Type": "application/json",
-                 "User-Agent": "spoot (https://greybot.ryangrey.dev, 1.0)",
+                 "User-Agent": "spoot (https://spoot.ryangrey.dev, 1.0)",
                  "X-Audit-Log-Reason": "spoot: officers-only Great Vault channel"})
     try:
         with urllib.request.urlopen(req, timeout=15) as res:

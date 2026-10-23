@@ -37,7 +37,7 @@ class StageConfig:
     schedule_timezone: str = "UTC"
 
     announce_tz: str = "America/New_York"
-    repo_url: str = "https://github.com/ryan-grey/greybot"
+    repo_url: str = "https://github.com/ryan-grey/spoot"
 
     # The SNS topic the alarm path already publishes to. Shared with the site's
     # alerting, deliberately: one topic, one delivery pipeline.

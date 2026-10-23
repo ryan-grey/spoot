@@ -5,9 +5,9 @@ import urllib.request
 
 
 def forward(raw, signature, timestamp):
-    request = urllib.request.Request("https://greybot.ryangrey.dev/discord/roles", data=raw,
+    request = urllib.request.Request("https://spoot.ryangrey.dev/discord/roles", data=raw,
         headers={"Content-Type": "application/json",
-                 "User-Agent": "spoot/1.0 (+https://greybot.ryangrey.dev/about)",
+                 "User-Agent": "spoot/1.0 (+https://spoot.ryangrey.dev/about)",
                  "X-Signature-Ed25519": signature,
                  "X-Signature-Timestamp": timestamp}, method="POST")
     try:

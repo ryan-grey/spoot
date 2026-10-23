@@ -102,7 +102,10 @@ def create_app(cfg=None, store=None, discord=None):
         await discord.close()
 
     app = FastAPI(docs_url=None, redoc_url=None, openapi_url=None, lifespan=lifespan)
-    app.add_middleware(TrustedHostMiddleware, allowed_hosts=[urlsplit(cfg.origin).hostname])
+    primary_host = urlsplit(cfg.origin).hostname
+    legacy_host = "greybot.ryangrey.dev" if cfg.origin == "https://spoot.ryangrey.dev" else None
+    app.add_middleware(TrustedHostMiddleware,
+                       allowed_hosts=[primary_host] + ([legacy_host] if legacy_host else []))
     app.state.store = store
     cookie = "__Host-greybot" if cfg.secure else "greybot-local"
     state_cookie = cookie + "-login"
@@ -119,6 +122,18 @@ def create_app(cfg=None, store=None, discord=None):
 
     @app.middleware("http")
     async def security_headers(request, call_next):
+        if legacy_host and request.url.hostname == legacy_host and request.method in {"GET", "HEAD"}:
+            # Restart an in-flight old-domain login; host-only cookies cannot move,
+            # and an OAuth code must not be forwarded without its state cookie.
+            if request.url.path == "/auth/callback":
+                response = RedirectResponse(cfg.origin + "/auth/login", status_code=303)
+            else:
+                target = cfg.origin + request.url.path
+                if request.url.query:
+                    target += "?" + request.url.query
+                response = RedirectResponse(target, status_code=308)
+            response.headers.update({"Cache-Control": "no-store", "Referrer-Policy": "no-referrer"})
+            return response
         try:
             length = int(request.headers.get("content-length", "0"))
         except ValueError:

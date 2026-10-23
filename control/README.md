@@ -283,6 +283,15 @@ OAuth settings. Login requests only `identify`; live bot REST checks validate
 current membership and Administrator permission or guild ownership on every
 private request. Session cookies contain random tokens; only hashes are stored.
 
+Production uses `https://spoot.ryangrey.dev`. Keep the old
+`greybot.ryangrey.dev` tunnel route and DNS record: browser links redirect to the
+same path and query on spoot, while signed bot POST endpoints remain reachable.
+An old-domain OAuth callback restarts login without forwarding its code because
+login cookies are host-only. Register the new callback in Discord and add the
+new hostname to the existing Turnstile widget before changing `GREYBOT_ORIGIN`.
+The old GitHub repository URL redirects to `https://github.com/ryan-grey/spoot`;
+do not reuse the `ryan-grey/greybot` repository name, which would break that redirect.
+
 ```sh
 python -m uvicorn greybot_control.web:create_app --factory --host 127.0.0.1 --port 8080 --no-access-log
 python -m greybot_control.worker
