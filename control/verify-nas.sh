@@ -12,7 +12,7 @@ chmod 0700 /volume1/docker/greybot/state /volume1/docker/greybot/private
 test "$(stat -c %a /volume1/docker/greybot/state)" = 700
 umask 022
 docker run --rm --network none --read-only --entrypoint python greybot-control:local \
-  -c 'import greybot_control.web, greybot_control.worker; print("greyBot image imports passed")'
+  -c 'import greybot_control.web, greybot_control.worker; print("spoot image imports passed")'
 {
   docker image inspect greybot-control:local --format '{{.Id}}'
   stat -c '%a %u:%g %n' /volume1/docker/greybot/state /volume1/docker/greybot/private

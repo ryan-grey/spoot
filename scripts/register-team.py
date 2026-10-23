@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Register a RAID TEAM as its own install of greyBot.
+"""Register a RAID TEAM as its own install of spoot.
 
     ./scripts/register-team.py --table ryangrey-greybot \
         --guild us/proudmoore/Scrambled --discord-guild 946663011991556117 \

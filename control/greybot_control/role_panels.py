@@ -14,14 +14,14 @@ async def validate(cfg, api, selected):
     roles = await api.request("GET", f"/guilds/{cfg.guild_id}/roles")
     bot = await api.member_context(cfg.client_id)
     if not bot["permissions"] & (ADMINISTRATOR | (1 << 28)):
-        raise Denied("greyBot needs Manage Roles")
+        raise Denied("spoot needs Manage Roles")
     found = {r["id"]: r for r in roles}
     for rid in selected:
         role = found.get(rid)
         if (not role or rid == cfg.guild_id or role.get("managed")
                 or int(role["permissions"]) & PRIVILEGED
                 or role["position"] >= bot["position"]):
-            raise Denied("Choose ordinary roles below greyBot's role")
+            raise Denied("Choose ordinary roles below spoot's role")
     return [found[rid] for rid in selected]
 
 
@@ -38,7 +38,7 @@ async def execute(cfg, store, api, job):
         await preflight(cfg, api, body["channel"])
         result = await api.request("POST", f'/channels/{body["channel"]}/messages', body={
             "embeds": [{"title": "Choose your roles", "description": "Use a button to add or remove that role. You can choose more than one.",
-                        "color": 0x4493F8, "author": {"name": "greyBot", "url": cfg.origin + "/about"}}],
+                        "color": 0x4493F8, "author": {"name": "spoot", "url": cfg.origin + "/about"}}],
             "components": [{"type": 1, "components": [{"type": 2, "style": 2,
                 "label": r["name"][:80], "custom_id": "greybot:role:" + r["id"]} for r in roles]}],
             "allowed_mentions": {"parse": []}, "nonce": job["id"][:25], "enforce_nonce": True})
@@ -63,7 +63,7 @@ async def execute(cfg, store, api, job):
     held = body["role"] in member.get("roles", [])
     await api.request("DELETE" if held else "PUT",
         f'/guilds/{cfg.guild_id}/members/{job["subject"]}/roles/{body["role"]}',
-        reason="Member selected their own role through greyBot")
+        reason="Member selected their own role through spoot")
 
 
 def receive(cfg, store, packet):

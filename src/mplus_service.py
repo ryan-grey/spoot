@@ -1,4 +1,4 @@
-"""Collection and weekly publishing in the existing greyBot raid Lambda."""
+"""Collection and weekly publishing in the existing spoot raid Lambda."""
 import os
 import mplus
 

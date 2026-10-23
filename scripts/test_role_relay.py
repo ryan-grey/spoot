@@ -30,7 +30,7 @@ class RelayTests(unittest.TestCase):
             self.assertEqual(request.data, raw)
             self.assertEqual(request.get_header('X-signature-ed25519'), 'signature')
             self.assertEqual(request.get_header('X-signature-timestamp'), 'timestamp')
-            self.assertTrue(request.get_header('User-agent').startswith('greyBot/'))
+            self.assertTrue(request.get_header('User-agent').startswith('spoot/'))
             self.assertEqual(timeout, 1.7)
             return io.BytesIO(json.dumps(reply).encode())
         with patch('urllib.request.urlopen', side_effect=send):

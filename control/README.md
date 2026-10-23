@@ -61,7 +61,7 @@ preferences remain available. Discord administrators bypass channel visibility d
 ## Voice clips
 
 The whole workflow happens inside Discord with one command that takes nothing to fill
-in, written so a child can use it. The first `/clip` in a voice channel brings greyBot in
+in, written so a child can use it. The first `/clip` in a voice channel brings spoot in
 to listen. Every `/clip` after that grabs the 5 seconds ending at the last sound (Discord
 allows 5.2, and MP3 padding pushed a 5.2-second clip over the limit in a live upload), not
 the quiet spent typing the command, and answers privately with
@@ -83,30 +83,30 @@ beside the queue for at most 14 minutes, are deleted on first use, and never ent
 job body or the audit journal.
 
 Discord allows a bot account one voice connection per server, so each simultaneous voice
-channel needs its own account. greyBot always takes the first channel. Optional helper
+channel needs its own account. spoot always takes the first channel. Optional helper
 bots, configured as `GREYBOT_VOICE_HELPER_1_TOKEN_SSM`, `_2_` and so on up to 8, take the
 next ones: the worker logs each in with only the guilds and voice-state intents and adds
-it to the pool. `/clip` still goes to greyBot, which posts the notice; whichever account is
+it to the pool. `/clip` still goes to spoot, which posts the notice; whichever account is
 free joins, and a member's clip always comes from the bot in their own channel. When every
-account is busy the member is told greyBot is busy. A helper needs View Channel and
+account is busy the member is told spoot is busy. A helper needs View Channel and
 Connect in voice channels and nothing else, and must be a different application from
-greyBot and from the other helpers. With no helpers configured greyBot clips one channel.
+spoot and from the other helpers. With no helpers configured spoot clips one channel.
 
 Any verified human member may use it, but only for the voice channel Discord reports
 them connected to when the job runs. Nobody, administrators included, can start
-listening to or capture a channel they are not in; greyBot holds one connection, so a
+listening to or capture a channel they are not in; spoot holds one connection, so a
 second channel is refused while it is listening elsewhere. Members name, publish and
 discard only their own captures, keep at most 5 drafts and publish at most 3 sounds a
 day, because soundboard slots are shared by the server. Administrators can act on any
-capture, have no limits and can always ask greyBot to leave. Refusals are explained to
+capture, have no limits and can always ask spoot to leave. Refusals are explained to
 the member in the private reply.
 
 Joining posts a fixed notice in the voice channel's chat first and refuses to connect if
 that post fails, so nobody is recorded without an announcement. On joining it also plays
-`assets/voice/listening.wav` ("greyBot is now listening for slash clip commands", a
-48 kHz mono WAV Ryan supplied and approved for this public repository) and then mutes
+`assets/voice/listening.wav` ("spoot is now listening for slash clip commands", a
+48 kHz mono WAV, refreshed with system speech for the spoot rebrand) and then mutes
 itself; a missing or unplayable file skips the spoken line, never the posted notice.
-greyBot stays undeafened and stays in the channel while anyone is there. It leaves, and
+spoot stays undeafened and stays in the channel while anyone is there. It leaves, and
 forgets the channel, when the last person leaves or someone presses Stop listening. After
 a worker restart or a lost connection it returns to a channel that still has people in it
 and posts the notice again; three failed returns make it give up rather than post notices
@@ -125,7 +125,7 @@ the upload; an ambiguous upload stays there for manual review and is never retri
 sound cannot be duplicated. A refused upload, such as a full soundboard, returns the
 capture to draft.
 
-greyBot needs View Channel, Send Messages and Connect in the voice channel, and Create
+spoot needs View Channel, Send Messages and Connect in the voice channel, and Create
 Expressions in the server. The Docker image adds `libopus0`. `requirements-voice.txt` is
 installed with `--no-deps` because that package's `discord.py[voice]` extra caps PyNaCl
 below the pinned release. Going live needs three steps in order: deploy this service,
@@ -138,7 +138,7 @@ join, and its state waiter signals with `Event.set()` then `Event.clear()` at on
 loses the wakeup when Discord's two replies land a millisecond apart: on the NAS worker
 every join timed out after 20 s until the state was armed first and polled. And
 `discord-ext-voice-recv` 0.5.2 discards a member's audio after they leave the channel until
-Discord re-announces them, which it did not when they came back; greyBot lifts that block
+Discord re-announces them, which it did not when they came back; spoot lifts that block
 and identifies an unannounced stream by whose DAVE key opens it. The worker logs voice
 connection progress, the type of any job failure and counts of unusable audio, never
 payloads.
@@ -165,21 +165,21 @@ this post** in a message's right-click Apps menu, for people who never discover
 reactions. A member's vote counts once however they cast it, and removing the
 star takes it back until the post is featured — after that it stays, because a
 card that appears and vanishes reads as a moderator deleting somebody's post.
-At `GREYBOT_FEATURE_THRESHOLD` nominations (default 4) greyBot posts a card to
+At `GREYBOT_FEATURE_THRESHOLD` nominations (default 4) spoot posts a card to
 `GREYBOT_FEATURED_CHANNEL_ID`: the author's name and avatar, the text, the first
 image the post carried, a jump link, and the star count with the source channel.
 
 A menu nomination is otherwise invisible — nobody else can see a post was put
-forward — so greyBot puts the first `⭐` on the post itself. That reaction is both
-the counter and the button: everyone else just clicks the pill. greyBot takes its
+forward — so spoot puts the first `⭐` on the post itself. That reaction is both
+the counter and the button: everyone else just clicks the pill. spoot takes its
 own star back as soon as a member has put one there, so the number on the pill is
-the real vote count rather than greyBot's seed plus the votes. `feature_marks`
-holds that one star per post: `pending` to place, `seeded` while greyBot's own is
+the real vote count rather than spoot's seed plus the votes. `feature_marks`
+holds that one star per post: `pending` to place, `seeded` while spoot's own is
 the only one, `clearing` once a member has starred it, `done` after. Both the PUT
 and the DELETE are idempotent, so a repeat costs nothing.
 
 Only channels under `GREYBOT_FEATURE_CATEGORY_ID` are eligible, never the
-featured channel itself and never greyBot's own posts. The reaction payload
+featured channel itself and never spoot's own posts. The reaction payload
 carries no parent channel, so eligibility is checked again when the card is
 built; a nomination somewhere ineligible simply settles `ineligible` and no card
 appears. `feature_delivery` settles each post once and retries nothing —
@@ -213,8 +213,8 @@ stays put, and nothing is moved out of the Saturday channel.
 ## Direct messages
 
 With `GREYBOT_DM_OWNER_ID` set, the worker subscribes to direct messages and `dm_relay`
-passes any member's DM to that one person's own DM with greyBot. The owner answers as
-greyBot by using Discord's Reply on the forwarded message; greyBot delivers it and ticks
+passes any member's DM to that one person's own DM with spoot. The owner answers as
+spoot by using Discord's Reply on the forwarded message; spoot delivers it and ticks
 the owner's message, or crosses it and says so when the member's DMs are closed. Nothing is
 resent automatically. A member is told once a day that a person reads these messages.
 Message text is relayed and never stored: `dm_forwards` holds only which forwarded message

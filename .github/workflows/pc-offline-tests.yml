@@ -1,4 +1,4 @@
-name: PC greyBot offline tests
+name: PC spoot offline tests
 
 on:
   workflow_dispatch:

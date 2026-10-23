@@ -51,7 +51,7 @@ class Directory:
     async def get(self):
         return {"members": [{"id": "7", "name": "Pete", "avatar_url": "", "active": True, "bot": False},
                             {"id": "8", "name": "Tidal", "avatar_url": "", "active": True, "bot": False},
-                            {"id": "9", "name": "greyBot", "avatar_url": "", "active": True, "bot": True}],
+                            {"id": "9", "name": "spoot", "avatar_url": "", "active": True, "bot": True}],
                 "channels": [{"id": "10", "name": "Keys"}, {"id": "99", "name": "Yoshi's Dhurmgeon"}]}
 
 

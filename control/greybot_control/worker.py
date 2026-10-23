@@ -169,7 +169,7 @@ async def run():
     intents.invites = intents.voice_states = intents.emojis_and_stickers = True
     intents.auto_moderation_execution = True
     intents.message_content = cfg.capture_content
-    # DMs to greyBot are relayed to one person, never journaled: the collector only records this server's events.
+    # DMs to spoot are relayed to one person, never journaled: the collector only records this server's events.
     intents.dm_messages = bool(cfg.dm_owner_id)
     from . import dm_relay
     dm_relay.install(store)
@@ -191,7 +191,7 @@ async def run():
                 if isinstance(packet, dict):
                     if str(packet.get("t") or "").startswith("VOICE_"):
                         mine = str((packet.get("d") or {}).get("user_id", "")) == cfg.client_id
-                        voice_clips.TRACE.append(packet["t"] + (":greyBot" if mine else ""))
+                        voice_clips.TRACE.append(packet["t"] + (":spoot" if mine else ""))
                     detector.receive(packet)
                     log_routing.observe(cfg, store, packet)
                     featured.observe(cfg, store, packet)

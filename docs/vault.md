@@ -1,6 +1,6 @@
 # Tuesday vault and gear check
 
-Every Tuesday at 11:30 AM Eastern, after the US weekly reset, greyBot posts one card to an
+Every Tuesday at 11:30 AM Eastern, after the US weekly reset, spoot posts one card to an
 officers-only channel under Progression Raid. Each Prog Raider gets one row:
 Discord name → character, then five columns.
 
@@ -83,7 +83,7 @@ snapshot. See `AGENTS.md` for the policy across all recap cards.
   fresh evidence, then displays the provider with the highest qualifying slot count.
 - Collection approach adapted from [WoWAudit's MIT-licensed collector](https://github.com/wowaudit/core/blob/89981788fe8b903d264ee4f6acec0529793234a6/lib/wowaudit/retrievers/keystones.rb).
   Its copyright/license notice is retained in `assets/LICENSE-wowaudit.txt` and bundled in
-  both deployed Lambda packages. greyBot collects provider data directly, not from the
+  both deployed Lambda packages. spoot collects provider data directly, not from the
   WoWAudit guild page. Leaderboards cannot expose every run; missing data remains unknown.
 - Blizzard keeps only the last kill per boss, so a boss killed again after reset hides its
   earlier kill. The Tuesday-morning run happens before any raid; a later re-run still counts
@@ -111,7 +111,7 @@ releases it: a missed post can be sent by hand, a duplicate cannot be taken back
 1. Deploy the code: `scripts/deploy-cdk.sh prod`. The deploy grants
    `/greybot/vault/channel_id`.
 2. Create the channel: `scripts/create-vault-channel.py` (preview), then `--apply`. It
-   denies @everyone and allows only greyBot; GM and Officer see it through Administrator.
+   denies @everyone and allows only spoot; GM and Officer see it through Administrator.
 3. `aws ssm put-parameter --name /greybot/vault/channel_id --type String --value <id>`.
 4. The schedule, first made by the retired `infra/create-vault-schedule.sh`, is now
    `VaultSchedule` in the CDK stack (`cdk/greybot/config.py`), adopted 2026-09-24.

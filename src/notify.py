@@ -1,6 +1,6 @@
 """Email, by way of the alert pipeline that already exists.
 
-greyBot does not talk to SES. It publishes to `ryangrey-dev-alerts`, the SNS topic that
+spoot does not talk to SES. It publishes to `ryangrey-dev-alerts`, the SNS topic that
 already fans out to ryangrey-alert-forwarder, which formats the message and sends it from
 alerts@ryangrey.dev over a DKIM-signed domain identity.
 
@@ -41,8 +41,8 @@ class NotifyError(RuntimeError):
 def clean_subject(text):
     """One line, ASCII, inside the cap. Non-ASCII is dropped rather than encoded: SNS
     rejects the publish outright, and an em dash is not worth losing an alert over."""
-    one_line = " ".join(str(text or "greyBot alert").split())
-    one_line = one_line.encode("ascii", "ignore").decode("ascii") or "greyBot alert"
+    one_line = " ".join(str(text or "spoot alert").split())
+    one_line = one_line.encode("ascii", "ignore").decode("ascii") or "spoot alert"
     return one_line[:SUBJECT_MAX - 3] + "..." if len(one_line) > SUBJECT_MAX else one_line
 
 

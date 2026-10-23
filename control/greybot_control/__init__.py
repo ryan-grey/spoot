@@ -1,1 +1,1 @@
-"""Event collection and administrative controls for greyBot."""
+"""Event collection and administrative controls for spoot."""

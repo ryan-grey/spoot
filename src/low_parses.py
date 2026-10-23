@@ -89,7 +89,7 @@ def message(entries, *, team_name, difficulty, raid, night_text, threshold=25.0,
                f"{threshold:g}% from {people} raider{'s' if people != 1 else ''}."
                + (f"\n{where}" if where else ""))
     embed = {"title": title, "color": COLOR,
-             "footer": {"text": "greyBot · sent only to you · rankPercent, the number raiders "
+             "footer": {"text": "spoot · sent only to you · rankPercent, the number raiders "
                                 "mean by \"parse\""}}
     if page_url:
         embed["url"] = page_url

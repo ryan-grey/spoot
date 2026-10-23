@@ -64,10 +64,10 @@ def nominate(cfg, store, message, member, channel, source):
 
 
 def mark(cfg, store, message, channel):
-    """A menu nomination is invisible, so greyBot puts the first star on the post itself.
+    """A menu nomination is invisible, so spoot puts the first star on the post itself.
 
     That star is what everyone else sees and clicks: Discord's own reaction pill is
-    both the counter and the button. greyBot takes its own star back as soon as a
+    both the counter and the button. spoot takes its own star back as soon as a
     member has put one there, so the number on the pill is the real vote count.
     """
     with store.connection() as db:
@@ -102,7 +102,7 @@ def observe(cfg, store, packet):
     if packet['t'] == 'MESSAGE_REACTION_REMOVE':
         withdraw(cfg, store, message, member)
         return
-    # A member has starred it, so greyBot's seed star has done its job and should
+    # A member has starred it, so spoot's seed star has done its job and should
     # come off; the pill stays up on the member's own star.
     with store.connection() as db:
         db.execute("UPDATE feature_marks SET state='clearing' WHERE guild=? AND message=?"
@@ -187,7 +187,7 @@ def card(guild, message, channel, stars, link):
 
 
 def own_star(message):
-    """Whether greyBot's own star is on the post, and whether anyone's is."""
+    """Whether spoot's own star is on the post, and whether anyone's is."""
     for reaction in message.get('reactions') or []:
         emoji = reaction.get('emoji') or {}
         if not emoji.get('id') and emoji.get('name') == STAR:
@@ -196,7 +196,7 @@ def own_star(message):
 
 
 async def marks_tick(cfg, store, api):
-    """Put greyBot's seed star on one post, or take one back. Both calls are idempotent."""
+    """Put spoot's seed star on one post, or take one back. Both calls are idempotent."""
     if not enabled(cfg):
         return
     with store.connection() as db:
@@ -269,7 +269,7 @@ async def tick(cfg, store, api):
         info = await api.request('GET', f'/channels/{channel}')
         original = await api.request('GET', f'/channels/{channel}/messages/{message}')
     except Denied:
-        settle('gone')  # Deleted, or greyBot cannot read that channel any more.
+        settle('gone')  # Deleted, or spoot cannot read that channel any more.
         return
     except Exception:
         settle('unknown')

@@ -31,7 +31,7 @@ class AuditDetailsTests(Base):
         embed = post["embeds"][0]
         self.assertEqual(embed["author"]["name"], "Server nickname")
         self.assertIn("guilds/1/users/8/avatars/", embed["author"]["icon_url"])
-        self.assertEqual(embed["footer"]["text"], "greyBot · Member: Server nickname")
+        self.assertEqual(embed["footer"]["text"], "spoot · Member: Server nickname")
         self.assertIn("**By:** Officer nickname", embed["description"])
         self.assertEqual([(f["name"], f["value"]) for f in embed["fields"]],
                          [("Added roles", "Saturday Raiders"), ("Removed roles", "Raiders")])

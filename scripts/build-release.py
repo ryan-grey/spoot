@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build all greyBot distribution components from one explicit source allowlist."""
+"""Build all spoot distribution components from one explicit source allowlist."""
 import hashlib
 import json
 from pathlib import Path
@@ -12,7 +12,7 @@ ROOT = Path(__file__).resolve().parent.parent
 
 def sources():
     paths = [ROOT / 'control' / 'Dockerfile', ROOT / '.dockerignore',
-             ROOT / 'assets' / 'greyBot-avatar-v5.png', ROOT / 'assets' / 'voice' / 'listening.wav']
+             ROOT / 'assets' / 'spoot-avatar.png', ROOT / 'assets' / 'voice' / 'listening.wav']
     paths += list((ROOT / 'control').glob('requirements*.txt'))
     paths += list((ROOT / 'control').glob('compose*.yaml'))
     paths += list((ROOT / 'control' / 'greybot_control').glob('*.py'))

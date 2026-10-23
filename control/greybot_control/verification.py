@@ -144,4 +144,4 @@ async def execute(cfg, store, api, job):
     if member.get("pending") or member.get("user", {}).get("bot") or member.get("joined_at") != body.get("joined_at"):
         raise Denied("Membership changed or server screening is incomplete")
     await api.request("PUT", f'/guilds/{cfg.guild_id}/members/{job["subject"]}/roles/{body["role"]}',
-                      reason="greyBot verified this member after server rules acceptance")
+                      reason="spoot verified this member after server rules acceptance")

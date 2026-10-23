@@ -42,7 +42,7 @@ import team
 import wcl
 
 VOICE_URL = "https://greybot.ryangrey.dev/internal/roll-call"
-USER_AGENT = "greyBot/1.0 (+https://greybot.ryangrey.dev/about)"
+USER_AGENT = "spoot/1.0 (+https://greybot.ryangrey.dev/about)"
 MAX_AGE_HOURS = 6            # a pull older than this is last night's news, not a roll call
 MIN_PULL_MS = 60_000         # a pull this short is a mis-pull, never the night's roll call
 PICTURES = 40                # a raid is 30; this only bounds a pathological channel
@@ -177,7 +177,7 @@ def embed(team_name, pull, lineup, voice, image_url, revision=None):
         text += f"\n{rollcall_card.NOT_IN_DISCORD}: {', '.join(p['name'] for p in unclaimed)}"[:600]
     card = {"title": f"Roll call · {pull['name']}", "description": text,
             "color": CARD_COLOR, "image": {"url": image_url},
-            "footer": {"text": "greyBot · attendance at the night's first pull"}}
+            "footer": {"text": "spoot · attendance at the night's first pull"}}
     if revision:
         card["fields"] = [{"name": f"Updated {revision['date']} · What changed",
                            "value": "\n".join("• " + line for line in revision["changes"]),

@@ -45,7 +45,7 @@ def response(body, guild_id):
     thread = (body.get("channel") or {}).get("type") in (10, 11, 12)
     required = VIEW_CHANNEL | SEND_POLLS | (SEND_MESSAGES_IN_THREADS if thread else SEND_MESSAGES)
     for raw, who in [(member.get("permissions"), "You"),
-                     (body.get("app_permissions"), "greyBot")]:
+                     (body.get("app_permissions"), "spoot")]:
         try:
             permissions = int(raw or "0")
         except (TypeError, ValueError):

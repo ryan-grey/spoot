@@ -18,7 +18,7 @@ The API started answering again between 19:00 and 19:31 UTC with no action taken
 code change. This is now an **incident record and a retrospective research brief**, not a
 live problem — do not go looking for a broken thing, it is not broken any more.
 
-**Impact while it lasted:** ~18 hours, 01:03 → ~19:30 UTC. greyBot could not see any raid
+**Impact while it lasted:** ~18 hours, 01:03 → ~19:30 UTC. spoot could not see any raid
 logs and therefore could not detect a kill. Nothing was lost: the dedupe state stayed
 intact and no announcement was skipped, because no kill was ever *detected* rather than
 detected-and-dropped. Scrambled did not raid in the window, so nothing was actually missed.
@@ -56,7 +56,7 @@ public, while every other part of the same API answers normally with the same to
 | **19:00** | still blind. Scrambled, Liquid **and Echo** all return 0 reports |
 | **19:31** | recovered. All three return reports again; global query returns reports |
 
-No deploy happened in that gap. The greyBot code changes that day landed hours later
+No deploy happened in that gap. The spoot code changes that day landed hours later
 (17:30+), and reverting them would not touch this — the blindness predates them.
 
 The transition is sharp: one poll worked, the next did not, 15 minutes apart.
@@ -107,7 +107,7 @@ there is nothing to read an explanation off.
 
 The first conclusion reached was **"the guild's logs went private."** It was wrong.
 
-It came from greyBot's own log line, which says as much:
+It came from spoot's own log line, which says as much:
 
 ```json
 {"event":"no_reports_visible","hint":"Raider.IO shows Heroic kills but Warcraft Logs
@@ -209,14 +209,14 @@ Raider.IO shows progress is an outage.
    candidate. WCL distinguishes the client endpoint (`/api/v2/client`, public data only)
    from the user endpoint (`/api/v2/user`, what an authorising user can see). If report
    listing moved behind the user endpoint, this is a permanent API change and not an
-   incident — which would change what greyBot has to do next. Look for changelog or docs
+   incident — which would change what spoot has to do next. Look for changelog or docs
    language about which fields each grant may read. Note `warcraftlogs.com/api/docs`
    returns **403** to non-browser clients, so it will need a real browser.
 
 3. **Is `reports()` specifically affected, or all of `reportData`?** Not yet tested:
    `reportData.report(code: "…")` for a single known-public report code. If fetching a
    report *by code* works while *listing* does not, that is a much narrower fault and
-   suggests a workaround — greyBot could conceivably discover codes another way. A code can
+   suggests a workaround — spoot could conceivably discover codes another way. A code can
    be lifted from the public reports list page by hand (Cloudflare 403s scripted fetches).
 
 4. **Does the guild `attendance` path still work?** A first attempt at

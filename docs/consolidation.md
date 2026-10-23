@@ -1,4 +1,4 @@
-# One greyBot source and release
+# One spoot source and release
 
 The `greybot` repository is the maintained source for the Discord application,
 raid announcements, signup service, admin website, guild history collector,

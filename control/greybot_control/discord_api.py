@@ -27,7 +27,7 @@ class DiscordAPI:
 
     async def request(self, method, path, *, body=None, reason=""):
         headers = {"Authorization": "Bot " + self.cfg.bot_token,
-                   "User-Agent": "greyBot/2.0"}
+                   "User-Agent": "spoot/2.0"}
         if reason:
             headers["X-Audit-Log-Reason"] = quote(reason[:400], safe="")
         # Only rate-limit rejections are safe to retry here. A 5xx after a
@@ -62,7 +62,7 @@ class DiscordAPI:
             body = {"json": payload}
         try:
             response = await self.http.patch(f"{API}/webhooks/{self.cfg.client_id}/{token}/messages/@original",
-                                             headers={"User-Agent": "greyBot/2.0"}, **body)
+                                             headers={"User-Agent": "spoot/2.0"}, **body)
         except httpx.HTTPError:
             raise Unavailable("Discord reply did not complete") from None
         if response.status_code >= 400:

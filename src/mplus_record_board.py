@@ -36,7 +36,7 @@ def artwork(season, runs):
             parsed = urlsplit(url)
             if parsed.scheme != 'https' or parsed.netloc != 'cdn.raiderio.net' or not parsed.path.startswith('/images/dungeons/'):
                 raise ValueError('Untrusted dungeon artwork URL')
-            req = urllib.request.Request(url, headers={'User-Agent': 'greyBot'})
+            req = urllib.request.Request(url, headers={'User-Agent': 'spoot'})
             with urllib.request.urlopen(req, timeout=6) as response:
                 if urlsplit(response.url).netloc != 'cdn.raiderio.net':
                     raise ValueError('Unexpected artwork redirect')
@@ -75,7 +75,7 @@ def render(runs, guild, season, art=None):
     image = Image.new('RGB', (1280, height * 2), c.BG)
     canvas = c._Canvas(image, ImageDraw.Draw(image), {})
     canvas.signup_role_icons = True
-    canvas.text(24, 18, 'GREYBOT  /  GUILD RECORDS', canvas.font('bold', 12), c.ACCENT, spacing=1)
+    canvas.text(24, 18, 'spoot  /  GUILD RECORDS', canvas.font('bold', 12), c.ACCENT, spacing=1)
     title=board_title(season,emoji=False)
     size=24
     while canvas.width(title,canvas.font('bold',size)) > 524:size-=1
@@ -128,7 +128,7 @@ def render(runs, guild, season, art=None):
 def request(token, method, path, body=None):
     req = urllib.request.Request(discord.CHANNEL_API + '/' + path, method=method,
         data=json.dumps(body).encode() if body is not None else None,
-        headers={'Authorization': 'Bot '+token, 'Content-Type': 'application/json', 'User-Agent': 'greyBot'})
+        headers={'Authorization': 'Bot '+token, 'Content-Type': 'application/json', 'User-Agent': 'spoot'})
     with urllib.request.urlopen(req, timeout=8) as response:
         raw = response.read()
         return json.loads(raw) if raw else {}
@@ -160,14 +160,14 @@ def page(runs, guild, season, image_url, now):
 .records article{{background:var(--surface,var(--bg));border:1px solid var(--line,#3d444d);border-radius:10px;padding:20px}}
 .records h2{{font-size:19px;margin:0 0 12px}}.result{{font-size:24px}}.result strong{{color:#3fb950;margin-right:12px}}
 .holders{{font-weight:600}}.records a{{color:inherit}}
-</style></head><body><header class="topbar"><a class="tb-brand" href="https://ryangrey.dev">ryangrey.dev</a><span>greyBot</span></header>
+</style></head><body><header class="topbar"><a class="tb-brand" href="https://ryangrey.dev">ryangrey.dev</a><span>spoot</span></header>
 <main class="wrap"><p class="kicker">{esc(guild)} · SEASON-LONG LEADERBOARD</p><h1>{esc(board_title(season))}</h1>
 <p class="lede">{esc(season)} · Highest timed keys with at least two guild members; fastest time breaks ties.</p>
-<p class="note">Updates automatically when greyBot finds a new record; this page refreshes every minute.</p>
+<p class="note">Updates automatically when spoot finds a new record; this page refreshes every minute.</p>
 <img class="record-card" src="{esc(image_url,quote=True)}" alt="Dungeon artwork and current record card; accessible results and run links follow below.">
 <div class="records">{"".join(panels)}</div><p class="note">Observed season records from <a href="https://raider.io">Raider.IO</a>; source coverage and updates can lag.
 Last changed <time datetime="{now.isoformat()}">{now:%Y-%m-%d %H:%M UTC}</time>.</p></main>
-<footer>greyBot · Guild Mythic+ records</footer></body></html>'''
+<footer>spoot · Guild Mythic+ records</footer></body></html>'''
 
 
 def sync(repo, cfg, channel, state, now):

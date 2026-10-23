@@ -27,7 +27,7 @@ import spec_icons
 WIDTH = 460
 ROW = 26
 HEAD = 22                # a boss heading line
-USER_AGENT = "greyBot/1.0 (+https://greybot.ryangrey.dev/about)"
+USER_AGENT = "spoot/1.0 (+https://greybot.ryangrey.dev/about)"
 MAX_ROWS = 28
 
 
@@ -87,8 +87,8 @@ def render(entries, *, team_name="", difficulty="", raid="", night_text="", thre
         canvas.hline(0, WIDTH, rc.TOPBAR, rc.LINE)
         canvas.text(rc.PAD, (rc.TOPBAR - 18) / 2, "ryangrey.dev", canvas.font("semibold", 15), rc.INK)
         lede = canvas.font("regular", 15)
-        canvas.text(WIDTH - rc.PAD - canvas.width("greyBot", lede), (rc.TOPBAR - 18) / 2,
-                    "greyBot", lede, rc.MUTED)
+        canvas.text(WIDTH - rc.PAD - canvas.width("spoot", lede), (rc.TOPBAR - 18) / 2,
+                    "spoot", lede, rc.MUTED)
 
         y = rc.TOPBAR + 24
         canvas.text(rc.PAD, y, "GREY PARSES · PRIVATE", canvas.font("regular", 12), rc.MUTED,

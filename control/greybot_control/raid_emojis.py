@@ -1,4 +1,4 @@
-"""Source icon IDs mapped to greyBot-owned application emojis."""
+"""Source icon IDs mapped to spoot-owned application emojis."""
 EMOJIS = {
     "878310168289505301": {
         "id": "1546964094869831763",

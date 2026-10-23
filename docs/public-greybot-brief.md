@@ -1,10 +1,10 @@
-# Project #9 — Public greyBot on CDK
+# Project #9 — Public spoot on CDK
 
-**Status:** on hold — greyBot stays a private bot (2026-09-24). Phase 1 (the CDK port) is
+**Status:** on hold — spoot stays a private bot (2026-09-24). Phase 1 (the CDK port) is
 done and Phase 2's tenant keys are in the code; Phase 3 onward is not started. The app
 is not public, has no install link and `/setup` answers only in the home server.
 Written Sept 1, 2026 (at Ryan's direction).
-**Decision:** Watchtower Pro is archived. Project #9 is generalizing greyBot from a
+**Decision:** Watchtower Pro is archived. Project #9 is generalizing spoot from a
 single-guild personal bot into an installable, multi-tenant Discord app, with its
 infrastructure rebuilt in **AWS CDK**. Two portfolio gaps close at once: first product
 with real external users, and the infrastructure-as-code framework line that AWS job

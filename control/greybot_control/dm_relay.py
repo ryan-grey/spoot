@@ -1,7 +1,7 @@
-"""Direct messages to greyBot reach a person, and that person can answer as greyBot.
+"""Direct messages to spoot reach a person, and that person can answer as spoot.
 
 A member who DMs the bot is told, once a day, that a human will read it. The message is passed to the owner's
-own DM with greyBot. The owner answers by using Discord's Reply on that forwarded message; greyBot delivers the
+own DM with spoot. The owner answers by using Discord's Reply on that forwarded message; spoot delivers the
 answer and ticks it. Message text is relayed, never stored: the only record kept is which forwarded message
 belongs to which member, plus contentless journal entries.
 """
@@ -47,8 +47,8 @@ async def receive(cfg, store, api, message):
     text = body_of(message)
     if not text:
         return
-    forwarded = await send(api, owner, f"📨 **DM to greyBot** from <@{message['author']}>\n{text[:LIMIT]}\n"
-                                       "-# Use Reply on this message to answer as greyBot.")
+    forwarded = await send(api, owner, f"📨 **DM to spoot** from <@{message['author']}>\n{text[:LIMIT]}\n"
+                                       "-# Use Reply on this message to answer as spoot.")
     now = time.time()
     with store.connection() as db:
         db.execute("DELETE FROM dm_forwards WHERE created<?", (now - KEEP_SECONDS,))
@@ -57,7 +57,7 @@ async def receive(cfg, store, api, message):
     store.append("dm-in:" + secrets.token_hex(16), cfg.guild_id, "DM_FORWARDED", message["author"], {})
     if not noticed or now - noticed["sent"] > NOTICE_SECONDS:
         # Nobody should think they are talking to software alone when a person is reading.
-        await send(api, message["author"], f"greyBot is a bot, so I passed your message to <@{owner}>, who runs it. "
+        await send(api, message["author"], f"spoot is a bot, so I passed your message to <@{owner}>, who runs it. "
                                            "They may answer you here.")
         with store.connection() as db:
             db.execute("INSERT OR REPLACE INTO dm_notices VALUES(?,?)", (message["author"], now))
@@ -78,7 +78,7 @@ async def answer(cfg, store, api, message):
     text = body_of(message)
     if not member or not text:
         if text:
-            await send(api, cfg.dm_owner_id, "To answer someone as greyBot, use Discord's **Reply** on the forwarded message you are "
+            await send(api, cfg.dm_owner_id, "To answer someone as spoot, use Discord's **Reply** on the forwarded message you are "
                                              "answering. Nothing was sent.")
         return
     try:
@@ -86,7 +86,7 @@ async def answer(cfg, store, api, message):
     except (Denied, Unavailable):
         # Closed DMs or a lost response: say so rather than let a reply vanish. Never resent automatically.
         await react("%E2%9D%8C")
-        await send(api, cfg.dm_owner_id, f"greyBot could not confirm delivery to <@{member}>. They may have DMs closed. Check before resending.")
+        await send(api, cfg.dm_owner_id, f"spoot could not confirm delivery to <@{member}>. They may have DMs closed. Check before resending.")
         return
     store.append("dm-out:" + secrets.token_hex(16), cfg.guild_id, "DM_REPLIED", member, {"actor": cfg.dm_owner_id})
     await react("%E2%9C%85")

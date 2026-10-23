@@ -1,6 +1,6 @@
 """Spec artwork for a card, by class and spec.
 
-IDs ONLY, deliberately. These name greyBot's own Discord application emojis, whose images
+IDs ONLY, deliberately. These name spoot's own Discord application emojis, whose images
 live on Discord's CDN; the art itself is never committed here. `recap_page` already refuses
 to redistribute Blizzard's role textures for exactly this reason, and forty spec icons in a
 public repository would be a much larger version of the same thing. A card that wants them
@@ -9,7 +9,7 @@ fetches them at render time, the way the roll call card fetches member avatars.
 Generated on 2026-09-19 from two things that already existed: the raid signup template's
 `classes[].specs[]`, which pairs a spec name with the source emoji it was imported with,
 and `control/greybot_control/raid_emojis.EMOJIS`, which maps that source id to the
-application emoji greyBot re-uploaded. Forty specs across all thirteen classes, no gaps.
+application emoji spoot re-uploaded. Forty specs across all thirteen classes, no gaps.
 
 The key is lowercase `class|spec`. Warcraft Logs spells classes without spaces
 ("DeathKnight"), and the signup template abbreviates two of them, so `key()` reconciles

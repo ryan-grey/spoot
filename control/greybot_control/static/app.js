@@ -211,7 +211,7 @@ const descriptions = {
   events: "Review your server's activity and moderation history.",
   messages: "Search messages captured in your private server index.",
   moderation: "Manage members and review every moderation request.",
-  settings: "Configure greyBot's server features."
+  settings: "Configure spoot's server features."
 };
 function notice(text) { $("#notice").textContent = text; $("#notice").hidden = !text; }
 async function api(path, options = {}) {

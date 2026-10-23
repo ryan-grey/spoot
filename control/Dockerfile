@@ -11,7 +11,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends libopus0 \
     && useradd --create-home --uid 10001 greybot \
     && mkdir /state && chown greybot:greybot /state
 COPY control/greybot_control ./greybot_control
-COPY assets/greyBot-avatar-v5.png /app/assets/greyBot-avatar-v5.png
+COPY assets/spoot-avatar.png /app/assets/spoot-avatar.png
 COPY assets/tenure-badges /app/assets/tenure-badges
 COPY assets/voice /app/assets/voice
 RUN chmod -R a+rX /app/control /app/assets

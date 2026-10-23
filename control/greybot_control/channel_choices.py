@@ -65,7 +65,7 @@ async def execute(cfg, store, api, job):
     deny = int(current["deny"])
     after = {"type": 1, "allow": current["allow"], "deny": str(deny | VIEW if body["hidden"] else deny & ~VIEW)}
     await api.request("PUT", f'/channels/{channel["id"]}/permissions/{job["subject"]}', body=after,
-                      reason="Member chose their own channel visibility through greyBot")
+                      reason="Member chose their own channel visibility through spoot")
     check = overwrite(await api.request("GET", f'/channels/{channel["id"]}'), job["subject"])
     if not check or any(str(check[k]) != str(after[k]) for k in ("allow", "deny")):
         raise Denied("Channel preference was not confirmed")

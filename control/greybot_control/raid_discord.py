@@ -317,7 +317,7 @@ def card(cfg, row, profiles):
              f"\n\n<t:{int(event['startTime'])}:F> · <t:{int(event['startTime'])}:R>",
              "color": 0x4493F8, "url": cfg.origin + "/raids#" + row["id"],
              "author": {"name": (leader.get("name") or event.get("leaderName") or "Raid leader")[:256]},
-             "fields": fields, "footer": {"text": "greyBot · " + ("Signups open" if opened else event["state"].capitalize() if event["state"] != "open" else "Signups closed")},
+             "fields": fields, "footer": {"text": "spoot · " + ("Signups open" if opened else event["state"].capitalize() if event["state"] != "open" else "Signups closed")},
              "timestamp": datetime.fromtimestamp(event["startTime"], timezone.utc).isoformat()}
     if leader.get("avatar_url"):
         embed["author"]["icon_url"] = leader["avatar_url"]
