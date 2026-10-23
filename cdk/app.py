@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""greyBot CDK app.
+"""spoot CDK app.
 
 Two stages, deployed one at a time and by hand:
 
@@ -26,6 +26,6 @@ env = cdk.Environment(
 
 for name, cfg in STAGES.items():
     GreybotStack(app, f"greybot-{name}", cfg=cfg, env=env,
-                 description=f"greyBot ({name}) — Phase 1 CDK port")
+                 description=f"spoot ({name}) — raid and server workflows")
 
 app.synth()
