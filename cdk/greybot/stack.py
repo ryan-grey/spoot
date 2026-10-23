@@ -1,4 +1,4 @@
-"""The greyBot stack.
+"""The spoot stack.
 
 Phase 1: the CURRENT single-tenant bot, expressed in CDK, with deploy parity and
 zero behaviour change. Multi-tenancy lands on top of this, not inside it.

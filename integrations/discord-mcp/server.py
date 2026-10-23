@@ -4,7 +4,7 @@
 One searchable index over three sources, each row tagged with where it came
 from so a search returns everything and the caller can always tell:
 
-  source=bot     servers greyBot has been invited to. Read via
+  source=bot     servers spoot has been invited to. Read via
                  the REST API, incrementally by message snowflake. This is
                  the ONLY source that can write (send / edit / delete), and it
                  writes as the bot, never as you.
