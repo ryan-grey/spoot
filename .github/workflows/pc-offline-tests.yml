@@ -15,7 +15,7 @@ jobs:
     name: Test on NoxStellaris
     if: >-
       github.event_name == 'workflow_dispatch' &&
-      github.repository == 'ryan-grey/greybot' &&
+      github.repository == 'ryan-grey/spoot' &&
       github.ref == 'refs/heads/main' &&
       github.actor == 'ryan-grey' &&
       github.triggering_actor == 'ryan-grey'

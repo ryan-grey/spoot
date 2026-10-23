@@ -1511,9 +1511,9 @@ def test_discord_payloads():
     check("an unset role id posts without a broken mention", "content" not in noping)
 
     credited = discord.aotc_payload("Scrambled", "R", "when", "1",
-                                    repo_url="https://github.com/ryan-grey/greybot")
+                                    repo_url="https://github.com/ryan-grey/spoot")
     check("a clear card keeps its one credit link",
-          "[spoot](https://github.com/ryan-grey/greybot)"
+          "[spoot](https://github.com/ryan-grey/spoot)"
           in credited["embeds"][0]["description"])
     check("...after the shared clear copy",
           credited["embeds"][0]["description"].startswith("**Heroic**\nR\nwhen"))
@@ -1525,14 +1525,14 @@ def test_discord_payloads():
     # cannot do: the ping, the author link and the clickable credit.
     carded = discord.aotc_payload("Scrambled", "R", "when", "1",
                                   thumbnail_url="https://art/x.jpg",
-                                  repo_url="https://github.com/ryan-grey/greybot",
+                                  repo_url="https://github.com/ryan-grey/spoot",
                                   card_url="https://raids/cards/r/aotc.gif?v=abc")["embeds"][0]
     check("a drawn AOTC card becomes the embed image",
           carded.get("image") == {"url": "https://raids/cards/r/aotc.gif?v=abc"})
     check("...and the embed stops repeating the card's words",
           "title" not in carded and "thumbnail" not in carded, sorted(carded))
     check("...but the credit link survives, because a PNG cannot be clicked",
-          carded.get("description") == "[spoot](https://github.com/ryan-grey/greybot)")
+          carded.get("description") == "[spoot](https://github.com/ryan-grey/spoot)")
     check("...without a duplicate footer", "footer" not in carded)
     check("a card with no repo URL has no empty description either",
           "description" not in discord.aotc_payload("S", "R", "w", "1",

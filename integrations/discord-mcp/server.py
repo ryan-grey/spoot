@@ -70,7 +70,7 @@ LOCAL_DB = Path(
     )
 )
 API = "https://discord.com/api/v10"
-USER_AGENT = "DiscordBot (https://github.com/ryan-grey/greybot/tree/main/integrations/discord-mcp, 0.1)"
+USER_AGENT = "DiscordBot (https://github.com/ryan-grey/spoot/tree/main/integrations/discord-mcp, 0.1)"
 DISCORD_EPOCH_MS = 1420070400000
 
 # Channel types (https://discord.com/developers/docs/resources/channel)

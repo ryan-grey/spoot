@@ -3,7 +3,7 @@
 A capture-only [Vencord](https://vencord.dev) plugin plus a small ingest
 script. It records the messages your Discord desktop client has **already
 received and rendered** — DMs, group DMs, and every server you can see — into
-a local SQLite database that [discord-mcp](https://github.com/ryan-grey/greybot/tree/main/integrations/discord-mcp)
+a local SQLite database that [discord-mcp](https://github.com/ryan-grey/spoot/tree/main/integrations/discord-mcp)
 reads as its `local` source.
 
 It never sends, never edits, never deletes, never calls Discord's REST API,

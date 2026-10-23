@@ -41,8 +41,8 @@ import store
 import team
 import wcl
 
-VOICE_URL = "https://greybot.ryangrey.dev/internal/roll-call"
-USER_AGENT = "spoot/1.0 (+https://greybot.ryangrey.dev/about)"
+VOICE_URL = "https://spoot.ryangrey.dev/internal/roll-call"
+USER_AGENT = "spoot/1.0 (+https://spoot.ryangrey.dev/about)"
 MAX_AGE_HOURS = 6            # a pull older than this is last night's news, not a roll call
 MIN_PULL_MS = 60_000         # a pull this short is a mis-pull, never the night's roll call
 PICTURES = 40                # a raid is 30; this only bounds a pathological channel

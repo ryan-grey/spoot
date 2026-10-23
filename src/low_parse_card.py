@@ -27,7 +27,7 @@ import spec_icons
 WIDTH = 460
 ROW = 26
 HEAD = 22                # a boss heading line
-USER_AGENT = "spoot/1.0 (+https://greybot.ryangrey.dev/about)"
+USER_AGENT = "spoot/1.0 (+https://spoot.ryangrey.dev/about)"
 MAX_ROWS = 28
 
 
