@@ -8,7 +8,7 @@ The channel carries its own permission overwrites instead of syncing with the ca
 Progression Raid's "Prog Raiders can view" does not reach it:
 
     @everyone   deny  View Channel
-    greyBot     allow View Channel, Send Messages, Embed Links, Attach Files, History
+    spoot     allow View Channel, Send Messages, Embed Links, Attach Files, History
 
 GM and Officer hold Administrator, which Discord applies above every overwrite, so they
 see it with no entry of their own. Nobody else does.
@@ -49,8 +49,8 @@ def call(method, path, bot, body=None):
         f"https://discord.com/api/v10{path}", method=method,
         data=json.dumps(body).encode() if body is not None else None,
         headers={"Authorization": f"Bot {bot}", "Content-Type": "application/json",
-                 "User-Agent": "greyBot (https://greybot.ryangrey.dev, 1.0)",
-                 "X-Audit-Log-Reason": "greyBot: officers-only Great Vault channel"})
+                 "User-Agent": "spoot (https://greybot.ryangrey.dev, 1.0)",
+                 "X-Audit-Log-Reason": "spoot: officers-only Great Vault channel"})
     try:
         with urllib.request.urlopen(req, timeout=15) as res:
             return json.load(res)

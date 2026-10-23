@@ -29,11 +29,11 @@ def check(cfg, admin, bot, member, role):
     if not role or role["id"] == cfg.guild_id or role.get("managed"):
         raise Denied("Choose an assignable role")
     if role["position"] >= bot["position"] or member["position"] >= bot["position"] or member["owner"]:
-        raise Denied("Role or member is above greyBot's authority")
+        raise Denied("Role or member is above spoot's authority")
     if not admin["owner"] and (role["position"] >= admin["position"] or member["position"] >= admin["position"]):
         raise Denied("Role or member is above your authority")
     if not bot["permissions"] & (ADMINISTRATOR | (1 << 28)):
-        raise Denied("greyBot needs Manage Roles")
+        raise Denied("spoot needs Manage Roles")
 
 
 async def authorize(cfg, api, actor, target, role_id):
@@ -53,7 +53,7 @@ async def execute(cfg, store, api, job):
     if (body["role"] in member.get("roles", [])) != desired:
         await api.request("PUT" if desired else "DELETE",
             f'/guilds/{cfg.guild_id}/members/{job["subject"]}/roles/{body["role"]}',
-            reason=f'greyBot admin {job["actor"]}: {body["operation"]} role')
+            reason=f'spoot admin {job["actor"]}: {body["operation"]} role')
     current = await api.request("GET", f'/guilds/{cfg.guild_id}/members/{job["subject"]}')
     if (body["role"] in current.get("roles", [])) != desired:
         raise Denied("Discord did not confirm the requested role state")

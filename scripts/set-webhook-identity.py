@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
-"""Set the announcing webhook's name and avatar to greyBot. Idempotent; safe to re-run.
+"""Set the announcing webhook's name and avatar to spoot. Idempotent; safe to re-run.
 
-Why the WEBHOOK and not the bot user: this bot has no gateway connection, so nothing ever
-logs in as a bot user. Every announcement is an HTTP POST to a webhook, and Discord renders
-those under the WEBHOOK's own name and avatar. Setting the application icon in the
-Developer Portal changes the icon on the app, not the face beside the messages in #bots.
-Both are worth setting; only this one changes what raiders actually see.
+This utility handles legacy webhook installs. Production uses the bot application and
+Gateway worker; use rebrand-discord.py for its bot, application and guild identities.
+Discord renders webhook messages under the webhook's own name and avatar, independently
+of the bot and application profiles.
 
 Set once here rather than per message. The alternative -- putting "username" and
 "avatar_url" in every POST -- needs the PNG served from a publicly reachable URL, which
@@ -33,8 +32,8 @@ import urllib.error
 import urllib.request
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-AVATAR = os.path.join(ROOT, "assets", "greyBot-avatar.png")
-BOT_NAME = "greyBot"
+AVATAR = os.path.join(ROOT, "assets", "spoot-avatar.png")
+BOT_NAME = "spoot"
 SSM_PARAM = "/greybot/discord/webhook_url"
 
 # Discord documents no size cap for data-URI images, but it has historically rejected
@@ -100,7 +99,7 @@ def call(url, method, payload=None):
     req = urllib.request.Request(
         url, data=data, method=method,
         headers={"Content-Type": "application/json",
-                 "User-Agent": "scrambled-raid-bot/1.0 (+greyBot identity)"})
+                 "User-Agent": "scrambled-raid-bot/1.0 (+spoot identity)"})
     try:
         with urllib.request.urlopen(req, timeout=20) as res:
             return json.loads(res.read().decode() or "{}")
@@ -119,7 +118,7 @@ def describe(hook):
 
 
 def main():
-    ap = argparse.ArgumentParser(description="Set the announcing webhook's greyBot identity.")
+    ap = argparse.ArgumentParser(description="Set the announcing webhook's spoot identity.")
     ap.add_argument("--webhook-url", help="overrides $DISCORD_WEBHOOK_URL and SSM")
     ap.add_argument("--check", action="store_true", help="report only, change nothing")
     ap.add_argument("--name", default=BOT_NAME)
@@ -140,7 +139,7 @@ def main():
 
     if args.check:
         ok = before.get("name") == args.name and bool(before.get("avatar"))
-        print("\n" + ("identity is already greyBot with an avatar set."
+        print("\n" + ("identity is already spoot with an avatar set."
                       if ok else
                       "identity is NOT set — run without --check to apply."))
         return 0 if ok else 1
@@ -153,7 +152,7 @@ def main():
 
     if after.get("name") != args.name or not after.get("avatar"):
         sys.exit("Discord accepted the request but the identity did not stick.")
-    print(f"\nAnnouncements in #bots will now post as {args.name} with the greyBot avatar.")
+    print(f"\nAnnouncements in #bots will now post as {args.name} with the spoot avatar.")
     print("The application icon in the Developer Portal is separate — see README.")
     return 0
 

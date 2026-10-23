@@ -1453,7 +1453,7 @@ def test_discord_payloads():
     # A kill card is for the raid team. A developer plug on every one of them is noise in
     # a channel shared with other people.
     check("a kill card carries NO developer credit",
-          "greyBot](" not in json.dumps(attributed))
+          "spoot](" not in json.dumps(attributed))
     check("a card with no art is still a valid card", "thumbnail" not in body)
 
     art = discord.kill_embed("Scrambled", ABYSS[2], 3, 8, "The Venomous Abyss", 66,
@@ -1513,7 +1513,7 @@ def test_discord_payloads():
     credited = discord.aotc_payload("Scrambled", "R", "when", "1",
                                     repo_url="https://github.com/ryan-grey/greybot")
     check("a clear card keeps its one credit link",
-          "[greyBot](https://github.com/ryan-grey/greybot)"
+          "[spoot](https://github.com/ryan-grey/greybot)"
           in credited["embeds"][0]["description"])
     check("...after the shared clear copy",
           credited["embeds"][0]["description"].startswith("**Heroic**\nR\nwhen"))
@@ -1532,7 +1532,7 @@ def test_discord_payloads():
     check("...and the embed stops repeating the card's words",
           "title" not in carded and "thumbnail" not in carded, sorted(carded))
     check("...but the credit link survives, because a PNG cannot be clicked",
-          carded.get("description") == "[greyBot](https://github.com/ryan-grey/greybot)")
+          carded.get("description") == "[spoot](https://github.com/ryan-grey/greybot)")
     check("...without a duplicate footer", "footer" not in carded)
     check("a card with no repo URL has no empty description either",
           "description" not in discord.aotc_payload("S", "R", "w", "1",
@@ -2907,11 +2907,11 @@ def test_health():
           res["status"] == health.OK
           and all(p["probe"] != "webhook" for p in res["probes"]), res)
 
-    # THE FALSE ALARM THIS BLOCK EXISTS FOR. greyBot is authorised with
+    # THE FALSE ALARM THIS BLOCK EXISTS FOR. spoot is authorised with
     # `applications.commands` and not `bot`, so it has no member and never has. The first
     # live run read that as a kick and mailed about a bot that was working perfectly.
     res = run(guilds=(200, []))
-    check("no bot member is NOT a fault — greyBot has never had one",
+    check("no bot member is NOT a fault — spoot has never had one",
           res["status"] == health.OK and res["definite"], res)
     check("...and the answer is carried for handler.py to compare against history",
           res["member"] is False, res)
@@ -2989,7 +2989,7 @@ def test_health():
 
     check("SNS subjects are capped", len(notify.clean_subject("x" * 300)) <= 100)
     check("...and stripped to ASCII, which SNS is fussy about",
-          notify.clean_subject("greyBot \u2014 kicked").isascii())
+          notify.clean_subject("spoot \u2014 kicked").isascii())
 
     # ------------------------------------------------- one email per event
     FAKE_DDB.items.clear()
@@ -3216,7 +3216,7 @@ def test_source_blind():
     """The other axis: the bot is fine and the source has stopped answering.
 
     This exists because it actually happened. On 2026-08-31 Warcraft Logs began returning
-    an empty report list for every guild, greyBot went eighteen hours unable to detect a
+    an empty report list for every guild, spoot went eighteen hours unable to detect a
     kill, and every Discord probe said ok the whole time -- because Discord WAS ok. The
     monitor watched the wrong axis.
 
@@ -4367,7 +4367,7 @@ def test_recap_end_to_end():
 
 
 def main():
-    print("greyBot self-test")
+    print("spoot self-test")
     for fn in (test_date_text, test_config, test_boss_art, test_name_normalisation,
                test_slug_resolution,
                test_seed_names, test_progress_count,

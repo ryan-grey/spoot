@@ -396,8 +396,8 @@ def render(summary, guild_name=None, night_text=None, raid_name=None, difficulty
         brand = canvas.font("semibold", 15)
         canvas.text(PAD, (TOPBAR - 18) / 2, "ryangrey.dev", brand, INK)
         lede_font = canvas.font("regular", 15)
-        canvas.text(WIDTH_CSS - PAD - canvas.width("greyBot", lede_font),
-                    (TOPBAR - 18) / 2, "greyBot", lede_font, MUTED)
+        canvas.text(WIDTH_CSS - PAD - canvas.width("spoot", lede_font),
+                    (TOPBAR - 18) / 2, "spoot", lede_font, MUTED)
 
         # .kicker, h1, .lede, .killed
         y = TOPBAR + 24

@@ -1,4 +1,4 @@
-"""Mythic+ state in greyBot's existing DynamoDB table; no public data bucket state."""
+"""Mythic+ state in spoot's existing DynamoDB table; no public data bucket state."""
 import json
 import time
 import uuid

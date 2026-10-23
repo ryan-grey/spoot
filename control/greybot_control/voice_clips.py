@@ -44,7 +44,7 @@ VIEW, SEND, CONNECT, CREATE_EXPRESSIONS = 1 << 10, 1 << 11, 1 << 20, 1 << 43
 PREFIX = "greybot:clip:"
 COMMAND_NAMES = {"clip"}
 NAME = re.compile(r"[\w !'&+.-]{2,32}")
-NOTICE = ("👂 greyBot is listening in this voice channel so anyone here can type **/clip** to turn the last few seconds "
+NOTICE = ("👂 spoot is listening in this voice channel so anyone here can type **/clip** to turn the last few seconds "
           "into a soundboard sound. It only remembers the last 90 seconds, nothing is saved unless someone here clips it, "
           "and saved clips are deleted within an hour. It stays until everyone has left the channel or someone presses Stop listening.")
 
@@ -188,7 +188,7 @@ def encode_mp3(pcm):
 
 
 def announcement():
-    """'greyBot is now listening for the slash clip command', as the 48 kHz stereo PCM Discord plays."""
+    """'spoot is now listening for the slash clip command', as the 48 kHz stereo PCM Discord plays."""
     import audioop
     from pathlib import Path
     path = Path(__file__).resolve().parents[2] / "assets" / "voice" / "listening.wav"
@@ -226,7 +226,7 @@ def voice_client_class():
 
     discord.py 2.7.1 sends the join (gateway op 4) and only then moves its connection state from
     `disconnected` to `set_guild_voice_state`. Replies that arrive while it is still `disconnected`
-    are silently ignored. On the NAS worker the event loop is busy journaling greyBot's own notice
+    are silently ignored. On the NAS worker the event loop is busy journaling spoot's own notice
     at that moment, Discord's replies (35 ms away) won that race every time, and each join timed
     out after 20 s. Arming first keeps discord.py's own guard and removes the window. Pinned to the
     library version in requirements.txt: `_voice_connect` and `create_connection_state` are private.
@@ -376,7 +376,7 @@ class Recorder:
         await self.announce(channel)
 
     async def announce(self, channel):
-        """Say out loud that greyBot is listening, then mute. The posted notice stays the gate; this is the courtesy."""
+        """Say out loud that spoot is listening, then mute. The posted notice stays the gate; this is the courtesy."""
         import asyncio
         import discord
         spoken = announcement()
@@ -427,7 +427,7 @@ class Recorder:
                            (self.cfg.guild_id, self.user_id, self.channel, self.since, time.time(), int(self.encrypted),
                             self.dropped + self.unknown))
             return
-        # greyBot stays in its channel for good: after a restart or a lost connection it comes back by itself,
+        # spoot stays in its channel for good: after a restart or a lost connection it comes back by itself,
         # and says so again, because a new listening session deserves a new notice.
         home = self.home()
         if not home or time.time() < self.retry:
@@ -443,7 +443,7 @@ class Recorder:
 
 
 class Pool:
-    """greyBot plus any helper bots, so several voice channels can be clipped at once: one account each."""
+    """spoot plus any helper bots, so several voice channels can be clipped at once: one account each."""
 
     def __init__(self, recorders):
         self.recorders = list(recorders)
@@ -596,7 +596,7 @@ def receive(cfg, store, packet):
     with store.connection() as db:
         db.execute("INSERT OR REPLACE INTO voice_tokens VALUES(?,?,?)", (job, token, time.time()))
     store.queue(job, cfg.guild_id, actor, "voice_" + action, subject, body)
-    # Deferred and private: only the member sees greyBot thinking, then its answer.
+    # Deferred and private: only the member sees spoot thinking, then its answer.
     return {"type": 5, "data": {"flags": 64}}
 
 
@@ -616,7 +616,7 @@ async def execute(cfg, store, api, job, recorder):
         await answer(str(exc))
         raise
     except Exception:
-        await answer("greyBot could not confirm that. Check before trying again.")
+        await answer("spoot could not confirm that. Check before trying again.")
         raise
 
 
@@ -635,17 +635,17 @@ async def run(cfg, store, api, job, recorder, answer):
             raise Denied("Hop into a voice channel first, then type **/clip** again.")
         recorder = pool.idle()
         if not recorder:
-            raise Denied("greyBot is busy in another voice channel right now. Try again when it is free.")
-        # greyBot posts the notice; whichever account is free joins.
+            raise Denied("spoot is busy in another voice channel right now. Try again when it is free.")
+        # spoot posts the notice; whichever account is free joins.
         poster = await bot_permissions(cfg, api, present)
         joiner = poster if recorder.user_id == cfg.client_id else await bot_permissions(cfg, api, present, recorder.user_id)
         if poster & (VIEW | SEND) != VIEW | SEND or joiner & (VIEW | CONNECT) != VIEW | CONNECT:
-            raise Denied("greyBot is not allowed into your voice channel. Ask an admin to let it in.")
+            raise Denied("spoot is not allowed into your voice channel. Ask an admin to let it in.")
         # No notice, no listening: the announcement is posted before the connection is made.
         await api.request("POST", f"/channels/{present}/messages",
                           body={"content": NOTICE, "allowed_mentions": {"parse": []}})
         await recorder.join(present)
-        await answer("👂 greyBot is listening now! When something funny happens, type **/clip** and it grabs the last few seconds.",
+        await answer("👂 spoot is listening now! When something funny happens, type **/clip** and it grabs the last few seconds.",
                      stop_button())
     elif kind == "voice_clip":
         with store.connection() as db:
@@ -662,7 +662,7 @@ async def run(cfg, store, api, job, recorder, answer):
             log.warning("Clip heard nothing: dropped=%s unidentified=%s failures=%s buffered speakers=%s",
                         getattr(recorder, "dropped", 0), getattr(recorder, "unknown", 0),
                         getattr(recorder, "failures", {}), len(recorder.timeline.tracks))
-            raise Denied("greyBot did not hear anybody talking just now. Try again after something happens!")
+            raise Denied("spoot did not hear anybody talking just now. Try again after something happens!")
         length = min(MAX_SOUND_SECONDS, seconds)
         start = max(0.0, last_sound(pcm) - length)
         capture_path(cfg, body["capture"]).write_bytes(wav_bytes(pcm))
@@ -679,11 +679,11 @@ async def run(cfg, store, api, job, recorder, answer):
         await preview(cfg, store, job["subject"], answer, edge + "Here it is, moved a bit. Press play!")
     elif kind == "voice_leave":
         if not recorder and not admin:
-            raise Denied("Only someone in the voice channel can ask greyBot to leave.")
+            raise Denied("Only someone in the voice channel can ask spoot to leave.")
         # An administrator outside the channel stops every listener. Forgetting the channel is what makes it final.
         await (recorder or pool).leave()
         (recorder or pool).forget()
-        await answer("👋 greyBot stopped listening and left. Type **/clip** any time to bring it back.")
+        await answer("👋 spoot stopped listening and left. Type **/clip** any time to bring it back.")
     elif kind == "voice_discard":
         owned_capture(cfg, store, job["subject"], actor, admin)
         capture_path(cfg, job["subject"]).unlink(missing_ok=True)
@@ -716,7 +716,7 @@ async def publish(cfg, store, api, job, row, admin):
         raise Denied(f"You already added {MAX_DAILY_SOUNDS} sounds today. You can add more tomorrow!")
     bot = await api.member_context(cfg.client_id)
     if not bot["permissions"] & (ADMINISTRATOR | CREATE_EXPRESSIONS):
-        raise Denied("greyBot is not allowed to add sounds yet. Ask an admin to give it Create Expressions.")
+        raise Denied("spoot is not allowed to add sounds yet. Ask an admin to give it Create Expressions.")
     if not NAME.fullmatch(row["name"]) or not 0 < row["length"] <= MAX_SOUND_SECONDS:
         raise Denied("Press the green button and give your clip a name first.")
     sound = encode_mp3(trim(capture_path(cfg, job["subject"]), row["start"], row["length"]))
@@ -732,7 +732,7 @@ async def publish(cfg, store, api, job, row, admin):
     try:
         created = await api.request("POST", f"/guilds/{cfg.guild_id}/soundboard-sounds",
             body={"name": row["name"], "volume": 1, "sound": "data:audio/mpeg;base64," + base64.b64encode(sound).decode()},
-            reason=f"greyBot member {job['actor']}: voice clip")
+            reason=f"spoot member {job['actor']}: voice clip")
     except Denied:
         with store.connection() as db:
             db.execute("UPDATE voice_captures SET state='draft' WHERE id=?", (job["subject"],))

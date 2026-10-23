@@ -1,6 +1,6 @@
 # Raid meta achievement
 
-greyBot watches one raid meta achievement per install ("Glory of the Venomous Raider",
+spoot watches one raid meta achievement per install ("Glory of the Venomous Raider",
 id 63254, this tier) **for the guild** and posts:
 
 - one blue card when the guild earns each achievement listed under it: the achievement and

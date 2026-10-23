@@ -51,7 +51,7 @@ def restore(current, prior):
     if all((int(current[k]) & MUTE_MASK) == (int(before[k]) & MUTE_MASK) for k in ("allow", "deny")):
         return current  # Already restored, including after a lost response.
     if int(current["allow"]) & MUTE_MASK or int(current["deny"]) & MUTE_MASK != MUTE_MASK:
-        raise Denied("Mute permissions were changed outside greyBot; review that channel before release")
+        raise Denied("Mute permissions were changed outside spoot; review that channel before release")
     return {"type": 1, **{k: str((int(current[k]) & ~MUTE_MASK) | (int(before[k]) & MUTE_MASK)) for k in ("allow", "deny")}}
 
 
@@ -76,7 +76,7 @@ class Mutes:
             permissions = effective_permissions(self.cfg.guild_id, roles, bot, channel)
             # Manage Permissions on this channel permits changing arbitrary bits.
             if not permissions & MANAGE_PERMISSIONS:
-                raise Denied("greyBot needs Manage Permissions in #" + channel["name"] + " before persistent mutes can run")
+                raise Denied("spoot needs Manage Permissions in #" + channel["name"] + " before persistent mutes can run")
             if len(channel.get("permission_overwrites", [])) >= 1000:
                 raise Denied("A channel permission list is full")
         return channels
@@ -114,7 +114,7 @@ class Mutes:
             if current and all(str(current[k]) == desired[k] for k in ("allow", "deny")):
                 continue
             await self.api.request("PUT", f"/channels/{channel['id']}/permissions/{user}", body=desired,
-                                   reason="greyBot persistent mute: " + reason)
+                                   reason="spoot persistent mute: " + reason)
         self.finish(user, "active", "MUTE_APPLIED", actor)
 
     def finish(self, user, state, event, actor):
@@ -139,9 +139,9 @@ class Mutes:
                 continue
             if not plan[cid]["before"] and not int(body["allow"]) and not int(body["deny"]):
                 if current:
-                    await self.api.request("DELETE", f"/channels/{cid}/permissions/{user}", reason="greyBot mute revoked: " + reason)
+                    await self.api.request("DELETE", f"/channels/{cid}/permissions/{user}", reason="spoot mute revoked: " + reason)
             else:
-                await self.api.request("PUT", f"/channels/{cid}/permissions/{user}", body={"type": 1, "allow": body["allow"], "deny": body["deny"]}, reason="greyBot mute revoked: " + reason)
+                await self.api.request("PUT", f"/channels/{cid}/permissions/{user}", body={"type": 1, "allow": body["allow"], "deny": body["deny"]}, reason="spoot mute revoked: " + reason)
         self.finish(user, "released", "MUTE_RELEASED", actor)
 
     async def reconcile(self):

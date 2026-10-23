@@ -1,4 +1,4 @@
-# greyBot
+# spoot
 
 Discord moderation, verification, raid signups, progression announcements and
 searchable history, with an administrator website and local reader integrations.
@@ -40,7 +40,7 @@ ROLE_ICONS server feature.
 ## Original raid-service reference
 
 The sections below document the raid service's development and original webhook
-deployment. Current production delivery uses the greyBot application; the legacy
+deployment. Current production delivery uses the spoot application; the legacy
 webhook is retired. The admin/Gateway service runs on a persistent Docker host,
 while raid scheduling and scorecard generation retain their AWS runtime.
 
@@ -361,7 +361,7 @@ point, and no amount of retrying will help.
 
 ## Weekly Mythic+ recaps
 
-greyBot collects observed guild Mythic+ runs and publishes a Tuesday 10am Eastern
+spoot collects observed guild Mythic+ runs and publishes a Tuesday 10am Eastern
 recap using the raid card's six-panel layout and full website standings. Rankings
 cover timed keys, total weekly IO gain, timed runs, timed +10 runs, and full-guild
 results. Ordinary run categories require at least two guild characters; full-guild
@@ -619,7 +619,7 @@ the same property for the same reason.
 
 At a fresh tier the killed-boss set is empty, so signal B reads *any* progression as the A
 team. If the B team raids first on opening night, it can take genuine first kills on the
-easy encounters, and greyBot will announce them as prog and may recap that night as the A
+easy encounters, and spoot will announce them as prog and may recap that night as the A
 team. This is understood and accepted for now; revisit before the next tier. Tagging the
 two teams in Warcraft Logs would close it outright.
 
@@ -824,20 +824,19 @@ own webhook.
 
 ---
 
-## The greyBot identity
+## The spoot identity
 
-The avatar people actually see beside each announcement is the **webhook's**, not the bot
-user's. This bot has no gateway connection, so nothing ever logs in as a bot user — every
-announcement is an HTTP POST, and Discord renders those under the webhook's own name and
-avatar. Setting the application icon in the Developer Portal changes the icon on the *app*;
-it does not change the face in `#bots`.
+The public name is **spoot**, always lowercase. The avatar is the pink triangle with
+two little black eyes used by Spoot Chrome, copied without alteration to
+`assets/spoot-avatar.png`. The dashboard, Discord profiles, voice helpers, automated
+replies and newly rendered raid cards use this identity.
 
-So there are two places, and they are set two different ways:
-
-| what | where | how |
-|---|---|---|
-| application / bot user icon | Developer Portal → the app → Bot → Icon | by hand — there is no API for it with a bot token |
-| **the face beside each announcement** | the `#bots` webhook | `scripts/set-webhook-identity.py` |
+Discord keeps the application and bot profiles separate. Update the application name
+in the Developer Portal; the application icon and description, bot username and avatar,
+server nickname, helper profiles, role names and channel descriptions must agree.
+`scripts/rebrand-discord.py` checks or applies the API-accessible branding with bot
+credentials loaded in memory. It never creates a replacement application or changes IDs.
+The retired webhook identity utility below remains available for legacy installs.
 
 ```sh
 scripts/set-webhook-identity.py --check    # report current identity, change nothing
@@ -854,22 +853,10 @@ means hosting it somewhere; the obvious somewhere is `ryangrey.dev`, which is de
 zero-external-request single-file site. Setting it once sidesteps that entirely and keeps
 the announcement payloads clean.
 
-`assets/greyBot-avatar.png` is the canonical web and webhook export, version controlled
-alongside the code. It is a deterministic 1024×1024 RGB downscale of Ryan's approved
-cloud-g master: a blue lowercase `g` with a white cloud on the approved black field.
-Discord never renders a webhook avatar above 128px and has historically rejected oversized
-data URIs, so the script downscales to 256px for the upload (469 KiB → 33 KiB) and leaves
-the canonical export untouched.
-
-`assets/greyBot-avatar-256.png` is that downscale, committed rather than generated on the
-fly. The script downscales with `sips`, which exists on macOS and not in CloudShell — and
-CloudShell is where this runs, because the deploy user cannot read the webhook from SSM.
-Pass it with `--avatar` there. Both committed sizes are lossless Lanczos exports from the
-approved 1254px `assets/greyBot-avatar-v5.png` master.
-
-```sh
-sips -Z 256 assets/greyBot-avatar.png --out assets/greyBot-avatar-256.png
-```
+Existing `greybot` infrastructure names, URLs, environment variables, Python modules,
+SSM paths and Discord component IDs remain stable for compatibility. They are internal
+identifiers, not the display name. Old image assets remain only as historical sources.
+The spoken listening notice says "spoot is now listening for slash clip commands."
 
 ---
 
@@ -966,12 +953,12 @@ made by hand.
 ### Installation, not membership, is the authority
 
 **This cost a false alarm on the first live run, and the mistake is worth recording.**
-greyBot was authorised to Scrambled with the `applications.commands` scope and never with
+spoot was authorised to Scrambled with the `applications.commands` scope and never with
 `bot`. It therefore has no member in the guild and never has: `/users/@me/guilds` returns
 `[]` and `/guilds/{id}` answers `404 Unknown Guild`. Nothing is wrong with that —
 announcements go through a webhook a person created, slash commands arrive at the
 interactions endpoint, and neither needs a member. The first version read that absence as
-a kick and mailed *"greyBot is no longer in the Scrambled Discord"* about a bot that was
+a kick and mailed *"spoot is no longer in the Scrambled Discord"* about a bot that was
 working perfectly.
 
 So the question "have we been thrown out" is asked of the **guild commands** instead.
@@ -1020,12 +1007,12 @@ being unreachable, may stop an announcement going out.
 
 ### Why SNS and not SES
 
-greyBot does not talk to SES. It publishes to `ryangrey-dev-alerts`, the topic that already
+spoot does not talk to SES. It publishes to `ryangrey-dev-alerts`, the topic that already
 fans out to `ryangrey-alert-forwarder`, which sends from `alerts@ryangrey.dev` over a
 DKIM-signed domain identity. That pipeline exists because **SNS's own email sender never
 delivered to the target Gmail address** — four subscription attempts, zero arrivals — while
 mail from an authenticated domain gets through. The forwarder already falls through to a
-plain message body for anything that is not a CloudWatch alarm, so greyBot publishing a
+plain message body for anything that is not a CloudWatch alarm, so spoot publishing a
 subject and a block of text needed no change on that side. A second SES sender here would
 mean a second reputation, a second set of DNS records, and a second thing to debug the next
 time mail goes missing.
@@ -1075,7 +1062,7 @@ src/discord.py       webhook payloads and retries
 src/health.py        can the bot still speak in the server — kick, ban, timeout, webhook
 src/notify.py        publish one alert to the ryangrey-dev-alerts topic
 src/interactions.py  slash commands: Ed25519 verification, PING/PONG, /progress
-assets/              greyBot-avatar.png — approved cloud-g canonical export, 1024x1024
+assets/              spoot-avatar.png — approved pink triangle with black eyes
 scripts/selftest.py  the gate; no AWS, no boto3, no network
 scripts/fixtures/report-recap.json  a REAL Warcraft Logs response, trimmed
 scripts/introspect-wcl.py  ask the API what its schema is, before writing a query
@@ -1129,7 +1116,7 @@ The one-time admin setup is split in two, and the order matters:
 | 1 | CloudShell | `infra/iam-setup.sh` — table, execution role, scheduler role |
 | 2 | local | `scripts/deploy.sh` — ship the function |
 | 3 | local | invoke once by hand, confirm it **seeded** |
-| 4 | local | `scripts/set-webhook-identity.py` — greyBot name and avatar |
+| 4 | local | `scripts/set-webhook-identity.py` — spoot name and avatar |
 | 5 | CloudShell | `infra/create-schedule.sh` — start the 15-minute poll |
 
 The schedule is deliberately last. EventBridge Scheduler validates its target at creation

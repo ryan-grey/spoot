@@ -3,19 +3,19 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>greyBot · Administration</title>
+  <title>spoot · Administration</title>
   <link rel="stylesheet" href="/assets/style.css">
   <script src="/assets/event-labels.js" defer></script>
   <script src="/assets/app.js" defer></script>
 </head>
 <body>
   <header class="global-header">
-    <a class="brand" href="/"><img class="mark" src="/assets/avatar.png" alt="" width="32" height="32"><span>greyBot</span></a>
+    <a class="brand" href="/"><img class="mark" src="/assets/avatar.png" alt="" width="32" height="32"><span>spoot</span></a>
     <span class="slash">/</span><span class="context-name">Administration</span>
     <div class="global-actions"><span class="admin-label">Administrator access</span><button id="logout">Sign out</button></div>
   </header>
   <div class="repo-header">
-    <div class="repo-title"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 7V5a4 4 0 0 1 8 0v2M3 7h10v8H3z"/></svg><span>greyBot</span><span class="badge">Private</span></div>
+    <div class="repo-title"><svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path d="M4 7V5a4 4 0 0 1 8 0v2M3 7h10v8H3z"/></svg><span>spoot</span><span class="badge">Private</span></div>
     <nav aria-label="Main navigation">
       <button data-panel="dashboard" class="active">Dashboard</button>
       <button data-panel="events"><span aria-hidden="true">◷</span> Event history</button>
@@ -32,7 +32,7 @@
           <div class="dashboard-cards">
             <div class="box dashboard-card"><h2>Raid events</h2><p class="muted">Manage signups and review complete rosters and past event responses.</p><a class="button primary" href="/raids">Open raid events</a></div>
             <div class="box dashboard-card"><h2>Member roles</h2><p class="muted">Find members by role or name, then review your selection before adding or removing a role.</p><button id="open-member-roles" class="primary">Manage member roles</button></div>
-            <div class="box dashboard-card"><h2>greyNAS</h2><p class="muted">Hosts greyBot's server and private audit archive.</p><p id="host-uptime">Waiting for health monitor</p><button id="open-health" class="primary">Health log</button></div>
+            <div class="box dashboard-card"><h2>greyNAS</h2><p class="muted">Hosts spoot's server and private audit archive.</p><p id="host-uptime">Waiting for health monitor</p><button id="open-health" class="primary">Health log</button></div>
             <div class="box dashboard-card"><h2>Needs Review</h2><p class="muted">Review roles, channel access and permission differences.</p><button data-dashboard-dialog="review" class="primary">Review checklist</button></div>
             <div class="box dashboard-card"><h2>Message search</h2><p class="muted">Find captured server messages by text, channel or member.</p><button data-dashboard-dialog="messages" class="primary">Search messages</button></div>
             <div class="box dashboard-card"><h2>Activity scoreboard</h2><p class="muted">Compare member activity from messages, reactions and voice time.</p><button data-dashboard-dialog="activity" class="primary">View scoreboard</button></div>
@@ -95,7 +95,7 @@
               <p class="muted wide">New members start in #start-here with the permanent Verify to unlock channels button, or use the button in their welcome post. The welcome button replies privately with a verification link. Members sign in with Discord and complete the human check after accepting server rules.</p>
               <h2 class="wide">Member role panel</h2>
               <div class="entity-picker wide" data-kind="roles" data-multiple="true" data-label="Self-service roles"><input type="hidden" name="self_roles"></div>
-              <p class="muted wide">Choose up to three ordinary roles. Members can independently add or remove these roles using greyBot's buttons; management roles are excluded.</p>
+              <p class="muted wide">Choose up to three ordinary roles. Members can independently add or remove these roles using spoot's buttons; management roles are excluded.</p>
               <div class="entity-picker" data-kind="channels" data-current="true" data-text="true" data-label="Role panel channel"><input type="hidden" name="role_panel_channel"></div>
               <button type="button" id="publish-role-panel">Publish role panel</button>
               <p class="muted wide">Save the role selection before publishing. This sends a new panel to the selected channel.</p>
@@ -106,7 +106,7 @@
               <h2 class="wide section-title">Automatic moderation</h2>
               <label>Enforcement<select name="moderation_enabled"><option value="false">Off</option><option value="true">On — silent enforcement</option></select></label>
               <p class="muted wide">Across channels, the fourth message within five seconds is deleted and records a private spam infraction. The third identical text within five seconds is deleted without an infraction unless it also exceeds the spam limit. No warning messages or DMs are sent.</p>
-              <p class="muted wide">Three spam infractions within 30 minutes trigger a mute until an admin revokes it. Revoking a mute resets the escalation count. Bots, webhooks, administrators and members at or above greyBot's role are excluded.</p>
+              <p class="muted wide">Three spam infractions within 30 minutes trigger a mute until an admin revokes it. Revoking a mute resets the escalation count. Bots, webhooks, administrators and members at or above spoot's role are excluded.</p>
               <h2 class="wide section-title">Member departures</h2>
               <label>Departure posts<select name="goodbye_enabled"><option value="false">Off</option><option value="true">On — coffin-dance GIF</option></select></label>
               <div class="entity-picker" data-kind="channels" data-current="true" data-text="true" data-label="Departure channel"><input type="hidden" name="goodbye_channel"></div>
@@ -127,7 +127,7 @@
         </section>
       </div>
       <aside class="about">
-        <h2>About this workspace</h2><p>Server administration and history, separate from Discord's message logs.</p><p><a href="/about">About greyBot →</a></p>
+        <h2>About this workspace</h2><p>Server administration and history, separate from Discord's message logs.</p><p><a href="/about">About spoot →</a></p>
         <div class="status-list" aria-label="Service status">
           <div><span>Actions</span><strong id="mode">Loading…</strong></div>
           <div><span>Journal</span><strong id="integrity">Loading…</strong></div>
@@ -138,7 +138,7 @@
         <div class="about-section"><h2>Access</h2><p class="muted">Only current server administrators can open this workspace.</p></div>
       </aside>
     </div>
-    <footer><a href="/about">About greyBot</a> <span>·</span> <a href="/about#contact">Contact developer</a></footer>
+    <footer><a href="/about">About spoot</a> <span>·</span> <a href="/about#contact">Contact developer</a></footer>
   </main>
   <div id="signed-in-member" class="signed-in-member" aria-label="Signed-in administrator"></div>
   <dialog id="roles-dialog" aria-labelledby="roles-title"><div class="dialog-heading"><h2 id="roles-title">Manage member roles</h2><button data-close="roles-dialog" aria-label="Close member roles">Close</button></div>
@@ -146,7 +146,7 @@
       <div class="filters"><label class="grow">Search members<input id="role-member-search" placeholder="Server name"></label><label>Filter by role<select id="role-member-filter"><option value="">All members</option></select></label></div>
       <details class="member-dropdown" open><summary>Members <span id="role-selection-count"></span></summary><button type="button" id="select-visible-members">Select filtered members</button><button type="button" id="clear-role-members">Clear selection</button><div id="role-member-options"></div></details>
       <div class="filters"><label>Action<select name="operation"><option value="add">Add role</option><option value="remove">Remove role</option></select></label><div class="entity-picker grow" data-kind="roles" data-current="true" data-label="Role to change"><input type="hidden" name="role"></div></div>
-      <p class="muted">Only the selected role changes; other roles stay in place. Your current authority and greyBot's role hierarchy are checked for every member.</p><p id="role-result" role="status"></p><button class="primary" type="submit">Review changes</button>
+      <p class="muted">Only the selected role changes; other roles stay in place. Your current authority and spoot's role hierarchy are checked for every member.</p><p id="role-result" role="status"></p><button class="primary" type="submit">Review changes</button>
       <div id="role-confirmation" hidden><p id="role-confirmation-text"></p><button id="apply-member-roles" type="button" class="primary">Apply reviewed changes</button></div>
     </form>
   </dialog>

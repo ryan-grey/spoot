@@ -219,7 +219,7 @@ async def apply(cfg, store, api, archive, actor, revision):
             if before != change["before"]:
                 raise Denied("Role permissions changed during cutover")
             path = f"/guilds/{cfg.guild_id}/roles/{role}"
-            await api.request("PATCH", path, body={"permissions": change["after"]}, reason="greyBot verified-member gate")
+            await api.request("PATCH", path, body={"permissions": change["after"]}, reason="spoot verified-member gate")
             live = await api.request("GET", f"/guilds/{cfg.guild_id}/roles")
             after = next((str(r["permissions"]) for r in live if r["id"] == role), None)
         else:
@@ -236,7 +236,7 @@ async def apply(cfg, store, api, archive, actor, revision):
             if before != change["before"]:
                 raise Denied("Channel permissions changed during cutover")
             await api.request("PUT", f"/channels/{channel}/permissions/{role}",
-                body={k: change["after"][k] for k in ("type", "allow", "deny")}, reason="greyBot verified-member gate")
+                body={k: change["after"][k] for k in ("type", "allow", "deny")}, reason="spoot verified-member gate")
             after = entry(await api.request("GET", f"/channels/{channel}"))
         if after != change["after"]:
             raise Unavailable("Permission write was not confirmed; inspect the archived cutover plan")

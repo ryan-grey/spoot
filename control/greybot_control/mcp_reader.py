@@ -1,4 +1,4 @@
-"""Local stdio read-only tools over greyBot's guild index.
+"""Local stdio read-only tools over spoot's guild index.
 
 No Discord credentials or network listener are needed. Local filesystem access
 is the trust boundary; do not expose this process as an unauthenticated service.
@@ -13,7 +13,7 @@ from pathlib import Path
 from mcp.server.mcpserver import MCPServer
 
 
-server = MCPServer(name="greyBot", instructions="Read-only local guild history and message search. No Discord writes.")
+server = MCPServer(name="spoot", instructions="Read-only local guild history and message search. No Discord writes.")
 
 
 def connection():

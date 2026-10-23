@@ -123,8 +123,8 @@ def render(rows, start, end, team_name, pictures=None, revision=None):
         canvas.text(rc.PAD, (rc.TOPBAR - 18) / 2, "ryangrey.dev", canvas.font("semibold", 15),
                     rc.INK)
         lede = canvas.font("regular", 15)
-        canvas.text(WIDTH - rc.PAD - canvas.width("greyBot", lede), (rc.TOPBAR - 18) / 2,
-                    "greyBot", lede, rc.MUTED)
+        canvas.text(WIDTH - rc.PAD - canvas.width("spoot", lede), (rc.TOPBAR - 18) / 2,
+                    "spoot", lede, rc.MUTED)
 
         y = rc.TOPBAR + 24
         kicker = " · ".join(s for s in ("VAULT & GEAR", (team_name or "").upper(), "WEEKLY") if s)

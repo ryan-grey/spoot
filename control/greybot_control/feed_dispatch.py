@@ -138,7 +138,7 @@ def render(row, keys, directory, settings, origin, details=None, *, admin_link=F
     channel_action = action in {10, 11, 12, 13, 14, 15}
     role_action = action in {30, 31, 32}
     member_subject = row["subject"] and not channel_action and not role_action and action != 1
-    footer = "greyBot"
+    footer = "spoot"
     if member_subject:
         lines.append("**Member:** " + safe_label(member.get("name", "Unavailable member")))
         footer += " · Member: " + str(member.get("name", "Unavailable member"))
@@ -176,7 +176,7 @@ def render(row, keys, directory, settings, origin, details=None, *, admin_link=F
         icons["channel_updated"] = "⚔️"
     embed = {"title": " · ".join((icons.get(key, "") + " " + AUDIT_EVENTS[key][1]).strip() for key in keys)[:256],
              "description": "\n".join(lines)[:700], "color": 0x4493F8,
-             "author": {"name": "greyBot"},
+             "author": {"name": "spoot"},
              "timestamp": datetime.fromtimestamp(p.get("occurred_at", row["observed"]), timezone.utc).isoformat(),
              "footer": {"text": footer[:300]}}
     if admin_link:
@@ -206,7 +206,7 @@ async def preflight(cfg, api, channel_id):
     roles = await api.request("GET", f"/guilds/{cfg.guild_id}/roles")
     needed = (1 << 10) | (1 << 11) | (1 << 14)
     if effective_permissions(cfg.guild_id, roles, bot, channel) & needed != needed:
-        raise Denied("greyBot needs View Channel, Send Messages and Embed Links in the audit channel")
+        raise Denied("spoot needs View Channel, Send Messages and Embed Links in the audit channel")
 
 
 class Feed:

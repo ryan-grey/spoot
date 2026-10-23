@@ -56,7 +56,7 @@ class VoiceDiscord(FakeDiscord):
         self.requests = []
         self.replies = []
         self.fail = None
-        # 7 is an administrator, 8 an ordinary member, 9 greyBot; 6 is a member who is not in voice.
+        # 7 is an administrator, 8 an ordinary member, 9 spoot; 6 is a member who is not in voice.
         self.voice = {"7": "4", "8": "4"}
         self.bots = {"9"}
 
@@ -783,7 +783,7 @@ class ReceiveTests(Base):
         self.assertEqual((self.recorder.unknown, self.recorder.dropped), (0, 0))
         self.assertEqual(len([s for s in session.seen if s[0] == 7]), len(self.frames), "each frame is opened exactly once")
         self.assertLessEqual(len([s for s in session.seen if s[0] == 6]), 1, "other members' keys are tried only while identifying")
-        self.assertFalse([s for s in session.seen if s[0] in (5, 9)], "already-known members and greyBot are never tried")
+        self.assertFalse([s for s in session.seen if s[0] in (5, 9)], "already-known members and spoot are never tried")
 
     def test_unidentifiable_audio_is_counted_and_never_buffered(self):
         self.returning(Session(fail=True), [9, 6, 7])

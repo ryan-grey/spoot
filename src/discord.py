@@ -312,7 +312,7 @@ def aotc_payload(guild_name, raid_name, when_text, role_id, iso_ts=None,
     copy = clear_card_copy(guild_name, raid_name, when_text, difficulty)
     description = copy["description"]
     if repo_url:
-        description += f"\n\n[greyBot]({repo_url})"
+        description += f"\n\n[spoot]({repo_url})"
     embed = {
         "title": copy["title"],
         "description": description,
@@ -329,7 +329,7 @@ def aotc_payload(guild_name, raid_name, when_text, role_id, iso_ts=None,
         embed.pop("thumbnail", None)
         embed.pop("title", None)
         if repo_url:
-            embed["description"] = f"[greyBot]({repo_url})"
+            embed["description"] = f"[spoot]({repo_url})"
         else:
             embed.pop("description", None)
     elif thumbnail_url:

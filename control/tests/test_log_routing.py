@@ -128,7 +128,7 @@ class RouteTests(unittest.TestCase):
         body = calls[2][2]
         self.assertEqual(body['embeds'][0]['title'], EMBED['title'])
         self.assertNotIn('provider', body['embeds'][0])
-        self.assertEqual(body['embeds'][0]['footer']['text'], 'greyBot · moved from the progression log channel')
+        self.assertEqual(body['embeds'][0]['footer']['text'], 'spoot · moved from the progression log channel')
         self.assertTrue(body['enforce_nonce'])
         self.assertEqual(self.pending(), [{'message': '9', 'state': 'moved', 'target': '50'}])
 

@@ -14,7 +14,7 @@ SECRET = "shared-secret"
 LISTING = {"server": {"id": "1", "name": "Scrambled"}, "roles": [], "channels": [{"id": "10", "name": "Smoobies", "active": True}],
            "members": [{"id": "7", "name": "Pete (Mograin)", "avatar_url": "https://cdn.discordapp.com/a.png", "bot": False, "roles": [], "active": True},
                        {"id": "8", "name": "Pie", "avatar_url": "", "bot": False, "roles": [], "active": True},
-                       {"id": "9", "name": "greyBot", "avatar_url": "", "bot": True, "roles": [], "active": True}]}
+                       {"id": "9", "name": "spoot", "avatar_url": "", "bot": True, "roles": [], "active": True}]}
 
 
 class PresentTests(Base):

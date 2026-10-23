@@ -53,7 +53,7 @@ def payload(run, previous=None, board_url=None, board_image=None, dungeon_art=No
         old_members=', '.join(member(p) for p in previous['roster'] if p['key'] in previous['guild_members'])
         fields.append({'name':'Previous guild record holders','value':old_members or 'Unavailable','inline':False})
     embed={'title':'🏆 New Record Set','description':description,'fields':fields,'color':0x4493F8,
-           'timestamp':run['completed'],'footer':{'text':'greyBot · Guild Mythic+ record'}}
+           'timestamp':run['completed'],'footer':{'text':'spoot · Guild Mythic+ record'}}
     url=safe_url(run['url'])
     result={'embeds':[embed],'allowed_mentions':{'parse':[]},
             'nonce':hashlib.sha256(('mplus-record:'+run['id']).encode()).hexdigest()[:24],'enforce_nonce':True}

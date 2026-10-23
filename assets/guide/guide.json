@@ -1,0 +1,210 @@
+[
+  {
+    "file": "01-spoot-guide.png",
+    "title": "Start here",
+    "subtitle": "Verify, get help, then choose your channels.",
+    "sections": [
+      [
+        "Verify",
+        "Use the server's verification page to unlock the channels your roles allow."
+      ],
+      [
+        "Choose your channels",
+        "Open Your channels to show or hide eligible channels. Your roles and existing access still apply."
+      ],
+      [
+        "Need a person?",
+        "DM spoot. Your message reaches the person who runs it, and they can reply through spoot."
+      ],
+      [
+        "Find your way",
+        "This guide covers member commands, raid signups, automatic updates, recaps, Mythic+ and voice clips."
+      ]
+    ]
+  },
+  {
+    "file": "02-spoot-guide.png",
+    "title": "Member commands",
+    "subtitle": "Type / in a server channel and choose a command.",
+    "sections": [
+      [
+        "/progress",
+        "See Scrambled's current Heroic raid progress. Only you see the answer."
+      ],
+      [
+        "/poll",
+        "Create a Discord poll with 2\u201310 answers, a duration from 1 hour to 7 days, and optional multiple selections. Requires Create Polls."
+      ],
+      [
+        "/raid",
+        "Open current raid signups, rosters and attendance."
+      ],
+      [
+        "/clip",
+        "While in voice, start listening or save the funny thing that just happened. See the voice clips card."
+      ]
+    ]
+  },
+  {
+    "file": "03-spoot-guide.png",
+    "title": "Raid events",
+    "subtitle": "Keep your signup current so organizers know who is coming.",
+    "sections": [
+      [
+        "Find an event",
+        "Run /raid or use the signup posted in your raid channel."
+      ],
+      [
+        "Choose your signup",
+        "Use the event's buttons and menus to choose attendance, class and specialization where offered."
+      ],
+      [
+        "Change your plans",
+        "Return to the same event to update your signup. Check the displayed date and time before joining."
+      ],
+      [
+        "For organizers",
+        "Members with Manage Server can use /create for a guided form or /quickcreate for a single command."
+      ]
+    ]
+  },
+  {
+    "file": "04-spoot-guide.png",
+    "title": "Automatic raid updates",
+    "subtitle": "First kills, milestones and team progress post automatically.",
+    "sections": [
+      [
+        "First boss kills",
+        "spoot watches connected raid sources and announces qualifying first kills for each configured team."
+      ],
+      [
+        "Team channels",
+        "Progression, Meer's Raid and Saturday Raid keep their own destinations and progress."
+      ],
+      [
+        "Ahead of the Curve",
+        "Qualifying Heroic completion is announced with the team's progress."
+      ],
+      [
+        "No command needed",
+        "These updates run on a schedule. Existing posts and raid records keep their original dates and results."
+      ]
+    ]
+  },
+  {
+    "file": "05-spoot-guide.png",
+    "title": "Raid recaps",
+    "subtitle": "The night's results, with a full scorecard on the website.",
+    "sections": [
+      [
+        "Read the card",
+        "Open the recap posted to your team's channel for a summary of that raid night."
+      ],
+      [
+        "Open the full recap",
+        "Follow the link for damage, healing, deaths, damage taken and performance summaries."
+      ],
+      [
+        "Keep the date in view",
+        "A recap describes its reported raid night. Later corrections are dated on the card and in its text."
+      ],
+      [
+        "Separate teams",
+        "Progression, Meer's Raid and Saturday Raid have separate pages and delivery channels."
+      ]
+    ]
+  },
+  {
+    "file": "06-spoot-guide.png",
+    "title": "Mythic+",
+    "subtitle": "Guild runs, weekly progress and records in one place.",
+    "sections": [
+      [
+        "Weekly recap",
+        "Look in the Mythic+ bot channel for the weekly guild recap."
+      ],
+      [
+        "Full standings",
+        "Open the linked page for standings, rosters and source coverage."
+      ],
+      [
+        "Guild runs",
+        "The recap covers observed guild runs, timed keys and score growth."
+      ],
+      [
+        "New records",
+        "spoot posts qualifying guild records and keeps the records page up to date."
+      ]
+    ]
+  },
+  {
+    "file": "07-spoot-guide.png",
+    "title": "spoot's slash commands",
+    "subtitle": "Seven slash commands. Permissions still apply.",
+    "sections": [
+      [
+        "/progress \u00b7 everyone",
+        "Shows Scrambled's current Heroic raid progress. Only you see the answer."
+      ],
+      [
+        "/raid \u00b7 everyone",
+        "Opens raid signups, rosters and attendance for current events."
+      ],
+      [
+        "/poll \u00b7 Create Polls",
+        "Creates a native Discord poll: 2\u201310 answers, 1 hour to 7 days, optional multiple selections."
+      ],
+      [
+        "/clip \u00b7 voice members",
+        "Turns the last five seconds into a soundboard sound you name. First use starts listening."
+      ],
+      [
+        "/create \u00b7 Manage Server",
+        "Creates a raid signup with a guided form for title, date, time, timezone and details."
+      ],
+      [
+        "/quickcreate \u00b7 Manage Server",
+        "Creates a raid signup in one command, with title and date as options."
+      ],
+      [
+        "/setup \u00b7 Manage Server",
+        "Connects the server to a WoW guild and chooses the channel and role for announcements."
+      ],
+      [
+        "How to run one",
+        "Type / in a channel and choose from spoot's commands. Discord hides commands you cannot use."
+      ]
+    ]
+  },
+  {
+    "file": "08-spoot-guide.png",
+    "title": "Voice clips",
+    "subtitle": "Turn a funny moment into a soundboard sound.",
+    "sections": [
+      [
+        "1 \u00b7 Start listening",
+        "Join voice and run /clip. spoot joins, posts a notice and says: spoot is now listening for slash clip commands."
+      ],
+      [
+        "2 \u00b7 Catch the moment",
+        "Run /clip again. Only you see the reply with a clip.mp3 player and four buttons."
+      ],
+      [
+        "3 \u00b7 Make it fit",
+        "Play the clip. Use A bit earlier or A bit later, then Add to soundboard and give it a name. Throw away discards it."
+      ],
+      [
+        "4 \u00b7 Play it",
+        "Stay connected to voice. Open Soundboard below Voice Connected on desktop, or swipe up in the call on a phone. Click a sound to play it."
+      ],
+      [
+        "What is kept",
+        "Only the last 90 seconds stay in memory until someone clips them. spoot leaves when voice is empty or Stop listening is pressed."
+      ],
+      [
+        "Shared soundboard",
+        "Members can publish up to three new sounds per day. Administrators are exempt. Everyone can play sounds in voice."
+      ]
+    ]
+  }
+]

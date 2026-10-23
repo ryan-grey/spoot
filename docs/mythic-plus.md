@@ -8,7 +8,7 @@ Primer palette and page stylesheet. No new host is required.
 
 - Publish Tuesdays at 10am America/New_York, following daylight saving time.
 - Number reports from the regional main Mythic+ season's launch week, not from
-  greyBot's first post. Raider.IO's static season metadata is refreshed daily;
+  spoot's first post. Raider.IO's static season metadata is refreshed daily;
   special-event seasons are excluded. Midnight Season 2 started August 18, 2026
   in the US, so August 18–25 is Week #1 and September 8–15 is Week #4.
   Sources: [Raider.IO season metadata](https://raider.io/api/v1/mythic-plus/static-data?expansion_id=11)

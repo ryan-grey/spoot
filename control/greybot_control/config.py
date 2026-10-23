@@ -36,7 +36,7 @@ def hydrate(name):
 
 
 def dm_owner(value):
-    # The one person who receives DMs sent to greyBot and may answer as it. Unset turns the relay off.
+    # The one person who receives DMs sent to spoot and may answer as it. Unset turns the relay off.
     if value and not value.isdecimal():
         raise ValueError("GREYBOT_DM_OWNER_ID must be a numeric user ID")
     return value

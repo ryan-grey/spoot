@@ -46,7 +46,7 @@ def post(guild, member, years):
                     'title': f'🎂 {years} {unit} in the server!',
                     'description': f'Thanks for being part of our community for {years} {unit}!',
                     'color': 0x4493F8, 'thumbnail': {'url': profile['avatar_url']},
-                    'footer': {'text': 'greyBot · Membership anniversary'}}],
+                    'footer': {'text': 'spoot · Membership anniversary'}}],
     }
 
 

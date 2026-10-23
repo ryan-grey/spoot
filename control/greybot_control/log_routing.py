@@ -80,7 +80,7 @@ def republish(message, link):
                  if key not in {'type', 'provider', 'video', 'timestamp'}}
         embeds.append(embed)
     if embeds:
-        embeds[0]['footer'] = {'text': 'greyBot · moved from the progression log channel'}
+        embeds[0]['footer'] = {'text': 'spoot · moved from the progression log channel'}
     return {'content': message.get('content') or ('' if embeds else link),
             'embeds': embeds, 'allowed_mentions': {'parse': []}}
 

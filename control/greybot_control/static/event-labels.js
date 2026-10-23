@@ -64,27 +64,27 @@ globalThis.describeGreybotEvent = function(row, resolve, serverName = "the serve
     MESSAGE_DELETE:`A message from ${member} was deleted in ${channel}`, MESSAGE_DELETE_BULK:`Multiple messages were deleted in ${channel}`,
     MESSAGE_REACTION_ADD:`${member} reacted to a message in ${channel}`,MESSAGE_REACTION_REMOVE:`${member} removed a reaction in ${channel}`,
     VOICE_STATE_UPDATE:`${member} ${p.feed_voice_changes?.includes("voice_joined")?"joined "+channel:p.feed_voice_changes?.includes("voice_left")?"left "+name("channels",p.previous_channel_id,"voice"):"changed their voice settings"}`,
-    ADMIN_LOGIN:`${member} signed in to the admin site`,SETTINGS_CHANGED:`${actor} changed greyBot's settings`,
+    ADMIN_LOGIN:`${member} signed in to the admin site`,SETTINGS_CHANGED:`${actor} changed spoot's settings`,
     ACTION_REQUESTED:`${actor} requested ${action} for ${member}`,
-    ACTION_RESULT:`greyBot finished an action for ${member}: ${{completed:"completed",denied:"blocked by permission checks",unknown:"result uncertain; check Discord before retrying"}[p.state] || p.state || "open for its recorded result"}`,
-    COLLECTOR_CONNECTED:"greyBot connected to Discord and began recording server events",
-    COLLECTOR_RESUMED:"greyBot reconnected to Discord and resumed recording server events",
-    COLLECTOR_DISCONNECTED:"greyBot lost its Discord connection; event collection may have a gap",
+    ACTION_RESULT:`spoot finished an action for ${member}: ${{completed:"completed",denied:"blocked by permission checks",unknown:"result uncertain; check Discord before retrying"}[p.state] || p.state || "open for its recorded result"}`,
+    COLLECTOR_CONNECTED:"spoot connected to Discord and began recording server events",
+    COLLECTOR_RESUMED:"spoot reconnected to Discord and resumed recording server events",
+    COLLECTOR_DISCONNECTED:"spoot lost its Discord connection; event collection may have a gap",
     HOST_HEALTH_GAP:p.restart_confirmed?"greyNAS restarted between health checks":"greyNAS monitoring missed a period; open for the observed time window",
     REVIEW_CHECKED:`${actor} ${p.checked?"checked off":"reopened"} a Needs Review item`,
     CHANNEL_VISIBILITY_APPLIED:`${member} ${p.hidden?"hid":"restored"} ${channel} in their channel list`,
     MUTE_APPLIED:`${member} was muted until an administrator revokes it`, MUTE_RELEASED:`${member}'s persistent mute was removed`,
-    MUTE_PREPARED:`greyBot prepared ${member}'s mute and saved the original permissions`,MUTE_NEEDS_REVIEW:`${member}'s mute needs administrator attention`,
+    MUTE_PREPARED:`spoot prepared ${member}'s mute and saved the original permissions`,MUTE_NEEDS_REVIEW:`${member}'s mute needs administrator attention`,
     MUTE_RELEASE_REQUESTED:`An administrator requested removal of ${member}'s mute`,
-    AUTOMOD_MESSAGE_DELETED:`greyBot removed a message from ${member} for automatic moderation`,AUTOMOD_INFRACTION:`greyBot recorded a spam infraction for ${member}`,
-    ROLE_PANEL_PUBLISHED:`greyBot posted role selection buttons in ${channel}`,
-    RAID_HISTORY_IMPORTED:`greyBot preserved ${p.title || "a raid event"} and ${p.signup_count ?? 0} signup records from ${channel}`,
+    AUTOMOD_MESSAGE_DELETED:`spoot removed a message from ${member} for automatic moderation`,AUTOMOD_INFRACTION:`spoot recorded a spam infraction for ${member}`,
+    ROLE_PANEL_PUBLISHED:`spoot posted role selection buttons in ${channel}`,
+    RAID_HISTORY_IMPORTED:`spoot preserved ${p.title || "a raid event"} and ${p.signup_count ?? 0} signup records from ${channel}`,
     RAID_CREATED:`${actor} created ${p.title || "a raid signup"} in ${channel}`,
-    RAID_REQUEST_REJECTED:`greyBot could not apply ${member}'s raid request: ${p.reason || "access or event checks failed"}`,
+    RAID_REQUEST_REJECTED:`spoot could not apply ${member}'s raid request: ${p.reason || "access or event checks failed"}`,
     RAID_CHANGED:`${actor} ${ {signup:"changed their signup for",withdraw:"withdrew from",note:"updated their note for",status:"changed their attendance status for",edit:"edited",close:"closed signups for",open:"reopened signups for",cancel:"cancelled"}[p.operation] || "updated"} ${p.title || "a raid event"}`,
-    ONBOARDING_GATE_PLANNED:"greyBot saved the planned new-member channel restrictions",
-    ONBOARDING_GATE_STEP_VERIFIED:"greyBot applied and verified one new-member permission change",
-    ONBOARDING_GATE_APPLIED:"greyBot finished applying the new-member verification gate",
+    ONBOARDING_GATE_PLANNED:"spoot saved the planned new-member channel restrictions",
+    ONBOARDING_GATE_STEP_VERIFIED:"spoot applied and verified one new-member permission change",
+    ONBOARDING_GATE_APPLIED:"spoot finished applying the new-member verification gate",
     INVITE_CREATE:"A new server invite was created",INVITE_DELETE:"A server invite was deleted",
     GUILD_UPDATE:"The server's settings changed",GUILD_EMOJIS_UPDATE:"The server's emojis changed",
     AUTO_MODERATION_ACTION_EXECUTION:"Discord applied an automatic moderation rule"
@@ -94,5 +94,5 @@ globalThis.describeGreybotEvent = function(row, resolve, serverName = "the serve
     const type=row.kind.startsWith("GUILD_ROLE")?"role":row.kind.startsWith("THREAD")?"thread":"channel";
     return `A ${type} was ${{CREATE:"created",UPDATE:"updated",DELETE:"deleted"}[row.kind.split("_").at(-1)]}${p.name?": "+p.name:""}`;
   }
-  return "greyBot recorded a server operation; open to see what was captured";
+  return "spoot recorded a server operation; open to see what was captured";
 };

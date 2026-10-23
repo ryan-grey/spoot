@@ -34,7 +34,7 @@ def calendar(event_id, event):
         return datetime.fromtimestamp(value, timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     def text(value):
         return str(value).replace("\\", "\\\\").replace("\r\n", "\n").replace("\r", "\n").replace("\n", "\\n").replace(";", "\\;").replace(",", "\\,")
-    lines=["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//greyBot//Raid Events//EN","BEGIN:VEVENT",
+    lines=["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//spoot//Raid Events//EN","BEGIN:VEVENT",
            "UID:"+event_id+"@greybot", "DTSTAMP:"+stamp(time.time()),
            "DTSTART:"+stamp(event["startTime"]),"SUMMARY:"+text(event["title"]),
            "DESCRIPTION:"+text(event.get("description", ""))]

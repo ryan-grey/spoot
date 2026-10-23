@@ -1,4 +1,4 @@
-"""Can greyBot still speak in Scrambled's Discord?
+"""Can spoot still speak in Scrambled's Discord?
 
 Nothing else in this bot would notice being thrown out. The announcer posts through a
 webhook, and a webhook is not a member -- so a kick, a ban or a timeout leaves every poll
@@ -15,12 +15,12 @@ Five questions, each asked of an endpoint that can only answer it one way:
   GET {webhook_url}                           does the thing we post through still exist
 
 INSTALLATION, not membership, is the authority on being thrown out -- and learning that
-cost a false alarm on the first live run. greyBot was authorised to Scrambled with the
+cost a false alarm on the first live run. spoot was authorised to Scrambled with the
 `applications.commands` scope and never with `bot`, so it has no member in the guild and
 never has: /users/@me/guilds returns [] and /guilds/{id} answers 404 Unknown Guild.
 Nothing is wrong with that. Announcements go through a webhook a person created, slash
 commands arrive at the interactions endpoint, and neither needs a member. Reading absence
-as a kick mailed "greyBot is no longer in the Scrambled Discord" about a bot that was
+as a kick mailed "spoot is no longer in the Scrambled Discord" about a bot that was
 working perfectly.
 
 So membership is REPORTED and not judged. It becomes an alert only as a regression -- a
@@ -81,16 +81,16 @@ SEVERITY = [NOT_INSTALLED, NOT_A_MEMBER, WEBHOOK_GONE, BAD_TOKEN, TIMED_OUT,
             SERVER_MUTED, POST_DELETED]
 
 HEADLINE = {
-    NOT_INSTALLED: "greyBot has been removed from the {guild} Discord",
-    NOT_A_MEMBER: "greyBot is no longer a member of the {guild} Discord",
-    BAD_TOKEN: "greyBot's Discord bot token is being rejected",
-    TIMED_OUT: "greyBot has been timed out in the {guild} Discord",
-    SERVER_MUTED: "greyBot has been server-muted in the {guild} Discord",
-    POST_DELETED: "A greyBot post was deleted in the {guild} Discord",
-    WEBHOOK_GONE: "greyBot's announcement webhook no longer exists",
-    SOURCE_BLIND: "greyBot cannot see any Warcraft Logs reports",
-    POLL_FAILING: "greyBot's polls are failing",
-    WCL_PUBLIC_ONLY: "greyBot can only read public Warcraft Logs reports",
+    NOT_INSTALLED: "spoot has been removed from the {guild} Discord",
+    NOT_A_MEMBER: "spoot is no longer a member of the {guild} Discord",
+    BAD_TOKEN: "spoot's Discord bot token is being rejected",
+    TIMED_OUT: "spoot has been timed out in the {guild} Discord",
+    SERVER_MUTED: "spoot has been server-muted in the {guild} Discord",
+    POST_DELETED: "A spoot post was deleted in the {guild} Discord",
+    WEBHOOK_GONE: "spoot's announcement webhook no longer exists",
+    SOURCE_BLIND: "spoot cannot see any Warcraft Logs reports",
+    POLL_FAILING: "spoot's polls are failing",
+    WCL_PUBLIC_ONLY: "spoot can only read public Warcraft Logs reports",
 }
 
 # What Ryan should actually do about it, which is the entire reason the mail is worth
@@ -113,10 +113,10 @@ ADVICE = {
                 "the webhook and not the token."),
     TIMED_OUT: ("A moderator has timed the app out. It lifts itself when it expires; "
                 "nothing needs deploying."),
-    SERVER_MUTED: ("Voice-only, so nothing this bot does is actually blocked -- greyBot "
+    SERVER_MUTED: ("Voice-only, so nothing this bot does is actually blocked -- spoot "
                    "never joins voice. Worth knowing because somebody moderated the app "
                    "on purpose."),
-    POST_DELETED: ("Somebody removed a message greyBot had posted. Nothing is broken -- "
+    POST_DELETED: ("Somebody removed a message spoot had posted. Nothing is broken -- "
                    "the bot's own dedupe state still records that boss or that night as "
                    "announced, so it will NOT repost it, which is why this is worth "
                    "telling you rather than silently healing. If the post should come "
@@ -127,7 +127,7 @@ ADVICE = {
                    "nothing needs redeploying, config.py re-reads it within five minutes."),
     SOURCE_BLIND: ("Discord is fine -- the log source is not. Warcraft Logs is returning "
                    "no reports at all for this guild while Raider.IO still shows Heroic "
-                   "progress, so greyBot cannot detect a kill and will announce nothing "
+                   "progress, so spoot cannot detect a kill and will announce nothing "
                    "until it clears. Nothing is lost: the dedupe state is intact and "
                    "announcements resume by themselves. Check whether the guild's logs "
                    "went private, and check whether OTHER guilds return reports too -- if "
@@ -142,7 +142,7 @@ ADVICE = {
                    "Warcraft Logs is rejecting the account grant: renew it with "
                    "scripts/connect-wcl.py --refresh, or reconnect in Chrome if that is "
                    "refused."),
-    WCL_PUBLIC_ONLY: ("Warcraft Logs is rejecting the account grant and greyBot could not "
+    WCL_PUBLIC_ONLY: ("Warcraft Logs is rejecting the account grant and spoot could not "
                       "renew it, so it has fallen back to public reports. Teams whose logs "
                       "are public carry on exactly as before. A team that logs PRIVATELY "
                       "(Saturday Raid) is invisible until this is fixed: no kill card, roll "
@@ -193,7 +193,7 @@ def _get(url, token=None, timeout=10):
 
 
 def posts_probe(bot_token, posts):
-    """Are the messages greyBot posted still in the channel?
+    """Are the messages spoot posted still in the channel?
 
     Discord has no "was my message deleted" event that a scheduled function can read --
     MESSAGE_DELETE is a gateway event and this bot deliberately holds no gateway
@@ -274,7 +274,7 @@ def installation_probe(bot_token, application_id, guild_id):
     Guild commands are stored against the app's authorisation in that guild, so this
     endpoint answers 200 exactly while the app is installed and 403 Missing Access once it
     is not -- whether it was kicked, banned, or removed from the server's Integrations
-    page. That holds even for an app with no bot member, which is what greyBot is.
+    page. That holds even for an app with no bot member, which is what spoot is.
 
     It is deliberately asked of a READ. Registration uses PUT against the same path, and a
     health check must never be able to change the command set it is checking.
@@ -298,7 +298,7 @@ def membership_probe(bot_token, guild_id, limit=200):
     """Is there a bot MEMBER in the server? Reported, never judged.
 
     Absence is not a fault. An app authorised with `applications.commands` and not `bot`
-    has no member and never will, which is greyBot's actual situation -- so this returns
+    has no member and never will, which is spoot's actual situation -- so this returns
     OK either way and carries the answer in `member`. handler.py raises NOT_A_MEMBER only
     when a member that existed before has gone, because that comparison needs the stored
     state and this function cannot see it.
@@ -309,7 +309,7 @@ def membership_probe(bot_token, guild_id, limit=200):
     either in it or it is not.
 
     The page-size guard is the exception. 200 is this endpoint's maximum, so a full page
-    means there may be another and absence proves nothing. greyBot lives in one server and
+    means there may be another and absence proves nothing. spoot lives in one server and
     will never see it; it costs one comparison to be sure the day it does.
     """
     code, body = _get(f"{API_BASE}/users/@me/guilds?limit={limit}", token=bot_token)
@@ -343,7 +343,7 @@ def member_probe(bot_token, guild_id, user_id, now):
     it expires -- so a past date means the timeout ENDED, and reading it as a boolean
     would keep mailing about a punishment that is already over.
 
-    `mute` and `deaf` are voice state. greyBot never joins voice, so neither one blocks
+    `mute` and `deaf` are voice state. spoot never joins voice, so neither one blocks
     anything it does; they are reported because somebody moderating the app on purpose is
     worth knowing about even when it costs nothing.
     """
@@ -433,10 +433,10 @@ def poll_result(status, failed_polls, threshold, errors):
 
 def subject(kind, status, guild_name):
     if kind == RECOVERY:
-        return f"greyBot is back to normal in the {guild_name} Discord"
+        return f"spoot is back to normal in the {guild_name} Discord"
     if kind == TEST:
-        return f"greyBot health check: {status}"
-    head = HEADLINE.get(status, f"greyBot: {status}").format(guild=guild_name)
+        return f"spoot health check: {status}"
+    head = HEADLINE.get(status, f"spoot: {status}").format(guild=guild_name)
     return f"Still: {head}" if kind == REMINDER else head
 
 

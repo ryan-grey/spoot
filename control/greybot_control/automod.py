@@ -64,7 +64,7 @@ async def execute(cfg, store, api, job):
     # Caller rechecks live bot permissions, owner/admin immunity and hierarchy.
     # No POST message endpoint is used: there are no warning messages or DMs.
     await api.request("DELETE", f"/channels/{body['channel_id']}/messages/{body['message_id']}",
-                      reason="greyBot: " + body["reason"])
+                      reason="spoot: " + body["reason"])
     with store.connection() as db:
         db.execute("BEGIN IMMEDIATE")
         store._append(db, "automod-deleted:" + job["id"], cfg.guild_id, "AUTOMOD_MESSAGE_DELETED", job["subject"],

@@ -1,4 +1,4 @@
-"""greyBot — announce first Heroic boss kills and AOTC, and recap raid nights, for
+"""spoot — announce first Heroic boss kills and AOTC, and recap raid nights, for
 the guild Scrambled.
 
 EventBridge Scheduler -> this Lambda -> Discord webhook. There is no gateway connection
@@ -772,7 +772,7 @@ def recap_card_alert(cfg, page_path, who, why):
     follows.
     """
     try:
-        body = (f"greyBot posted the recap for {page_path} WITHOUT its drawn card.\n\n"
+        body = (f"spoot posted the recap for {page_path} WITHOUT its drawn card.\n\n"
                 f"Why: {why}\n\n"
                 f"What went out instead: the same six leaderboards as text fields on the "
                 f"embed (top damage, top heals, damage taken, most deaths, best parses, "
@@ -785,7 +785,7 @@ def recap_card_alert(cfg, page_path, who, why):
                 f"night (dynamodb update-item ... DELETE posted :b on the tenant's RECAPS "
                 f"row) and invoke {{\"mode\":\"recap\",\"manual\":true,...}}.")
         sent = notify.publish(cfg.get("alert_topic_arn"),
-                              f"greyBot posted the {who} recap without its card "
+                              f"spoot posted the {who} recap without its card "
                               f"({page_path})", body)
         log("recap_card_alert", night=page_path, sent=bool(sent),
             configured=bool(cfg.get("alert_topic_arn")))
@@ -1226,7 +1226,7 @@ def handle_setup(body, now_iso):
         guild=guild, channel=channel, hasRole=bool(role))
 
     return {"ok": True, "embed": {
-        "title": "greyBot is set up",
+        "title": "spoot is set up",
         "description": (f"Tracking **{profile.get('name') or guild}** on "
                         f"**{profile.get('realm') or realm}** ({region.upper()}).\n"
                         f"Announcements go to <#{channel}>."
@@ -1344,7 +1344,7 @@ def handle_interaction(event, cfg, scope, now):
             if str(body.get("guild_id") or "") != str(cfg.get("discord_guild_id") or ""):
                 log("setup_denied", reason="not_home_server")
                 return interactions.http(200, interactions.message(
-                    {"description": "greyBot is a private bot and can't be set up here.",
+                    {"description": "spoot is a private bot and can't be set up here.",
                      "color": discord.BRAND_ACCENT}, ephemeral=True))
             # Belt and braces on top of default_member_permissions. That field is
             # a default a server admin can override in Discord's UI, so it is not
@@ -1519,11 +1519,11 @@ def probe_report_visibility(token, guild_id, start_ms, end_ms, check_history=Fal
 
 
 def run_source_check(cfg, scope, now, now_iso, blind, detail=None):
-    """Can greyBot still SEE the raid logs it exists to read?
+    """Can spoot still SEE the raid logs it exists to read?
 
     A different axis from health.py entirely, and the one that was missing. On 2026-08-31
     Warcraft Logs began answering every report query with an empty list -- for every guild,
-    not just this one -- and greyBot went eighteen hours unable to detect a kill while every
+    not just this one -- and spoot went eighteen hours unable to detect a kill while every
     Discord probe reported ok, because Discord was fine. The bot was perfectly healthy and
     completely blind, and the only reason anybody found out was that Ryan asked.
 
@@ -1606,7 +1606,7 @@ def run_health_check(cfg, scope, now, now_iso, forced=False):
         return result
 
     # Losing a bot member is a REGRESSION, not a state, and only the stored answer knows
-    # whether there was ever a member to lose. greyBot was authorised with
+    # whether there was ever a member to lose. spoot was authorised with
     # `applications.commands` and never with `bot`, so it has no member and never has --
     # reading that absence as a kick is what mailed a false alarm on the first live run.
     # health.py reports; the comparison lives here because the comparison needs history.
@@ -1636,7 +1636,7 @@ def run_health_check(cfg, scope, now, now_iso, forced=False):
     # The member flag has to be able to move the write on its own. Gaining or losing a seat
     # while the status stays "ok" is not an event and mails nothing -- but it IS the fact
     # the regression rule reads next time, so skipping the write leaves that rule comparing
-    # against a stale answer. That is not hypothetical: greyBot was authorised with the bot
+    # against a stale answer. That is not hypothetical: spoot was authorised with the bot
     # scope, the next check saw member=true, status stayed ok, nothing was written, and the
     # stored flag sat at false. A kick of the member would then have compared false against
     # false and said nothing.

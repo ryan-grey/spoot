@@ -131,7 +131,7 @@ def health_status(store, guild):
             disconnected = None
     if disconnected is not None:
         gaps.append({"last_seen": disconnected, "recovered": None, "connection": True})
-    return {"host": "greyNAS", "purpose": "Hosts greyBot's server and private audit archive",
+    return {"host": "greyNAS", "purpose": "Hosts spoot's server and private audit archive",
             "status": dict(row) if row else None,
             "gaps": sorted(gaps, key=lambda g: g["last_seen"], reverse=True)[:100],
             "note": "Sampled every 30 seconds; Discord disconnects and recovery are also recorded. Latest 100 gaps shown; full records remain in Event history. Gap times bound observations, not exact power or network failure times. No earlier outages are inferred."}
