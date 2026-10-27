@@ -43,6 +43,19 @@ State lives outside the repo in ~/.local/discord-mcp: index.db (SQLite +
 FTS5) and discord-changes.log (before/after of every write).
 """
 
+# Codex may retain this legacy command in an already-running client.
+# Route new starts only; running sessions and other clients remain untouched.
+if __name__ == "__main__":
+    import os as _lazy_os
+    _lazy_flag = _lazy_os.path.expanduser("~/.local/share/claude-helper-launcher/codex-legacy-enabled")
+    _lazy_entry = _lazy_os.path.expanduser("~/Developer/claude-helper-launcher/legacy_entry.py")
+    if _lazy_os.path.isfile(_lazy_flag) and _lazy_os.path.isfile(_lazy_entry):
+        try:
+            import runpy as _lazy_runpy
+            _lazy_runpy.run_path(_lazy_entry, init_globals={"helper_name": "discord"})
+        except Exception:
+            pass  # Optional routing must not prevent the normal server start.
+
 import csv
 import datetime
 import io

@@ -4,7 +4,9 @@ import asyncio
 from datetime import datetime, timezone
 import json
 import os
+import re
 import time
+from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 from discord.utils import escape_markdown, escape_mentions
 
@@ -81,12 +83,60 @@ def parse_start(value):
         dt = datetime.fromisoformat(value.replace("Z", "+00:00"))
         if dt.tzinfo is None:
             raise ValueError()
+        # ISO offsets describe timezones, never an event's ending time.
+        # Python accepts offsets such as -20:00, which silently move a raid
+        # entered as "18:00-20:00" into the following day.
+        if not -12 * 3600 <= dt.utcoffset().total_seconds() <= 14 * 3600:
+            raise ValueError()
         timestamp = int(dt.timestamp())
         if not time.time() < timestamp < time.time() + 366 * 86400:
             raise ValueError()
         return timestamp
     except (ValueError, TypeError, AttributeError):
-        raise Denied("Use a future date with UTC offset, for example 2026-09-12T18:00-07:00") from None
+        raise Denied("Enter one future start time with a real timezone offset, not a time range. Use /create for separate date, time and timezone fields.") from None
+
+
+def form_start(fields):
+    """Resolve an explicit wall-clock start and zone; reject DST uncertainty."""
+    # A form already open during deployment may still contain the old field.
+    if "when" in fields and not any(k in fields for k in ("date", "start", "zone")):
+        return parse_start(fields["when"])
+    aliases = {"eastern": "America/New_York", "central": "America/Chicago",
+               "mountain": "America/Denver", "pacific": "America/Los_Angeles", "utc": "UTC"}
+    try:
+        day = fields.get("date", "").strip()
+        clock = fields.get("start", "").strip().upper()
+        if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", day):
+            raise ValueError()
+        if re.fullmatch(r"\d{1,2}:\d{2}\s*[AP]M", clock):
+            clock = re.sub(r"\s*([AP]M)$", r" \1", clock)
+            wall = datetime.strptime(day + " " + clock, "%Y-%m-%d %I:%M %p")
+        elif re.fullmatch(r"\d{1,2}:\d{2}", clock):
+            wall = datetime.strptime(day + " " + clock, "%Y-%m-%d %H:%M")
+        else:
+            raise ValueError()
+        name = fields.get("zone", "").strip()
+        zone = ZoneInfo(aliases.get(name.lower(), name))
+        candidates = {wall.replace(tzinfo=zone, fold=fold).timestamp() for fold in (0, 1)
+                      if wall.replace(tzinfo=zone, fold=fold).astimezone(timezone.utc)
+                      .astimezone(zone).replace(tzinfo=None) == wall}
+        if len(candidates) != 1:
+            raise Denied("That local time is skipped or repeated when daylight saving time changes. Choose an unambiguous start time, or use UTC.")
+        return parse_start(datetime.fromtimestamp(candidates.pop(), timezone.utc).isoformat())
+    except (ValueError, TypeError, AttributeError, ZoneInfoNotFoundError):
+        raise Denied("Enter a date like 2026-10-24, one start time like 6:00 PM (or 18:00), and a timezone such as Pacific or Eastern. Put any ending time in Details.") from None
+
+
+def event_fields(event=None):
+    # Five inputs fit Discord's modal limit; never combine an end time with a zone.
+    event = event or {}
+    start = (datetime.fromtimestamp(event["startTime"], ZoneInfo("America/New_York"))
+             if "startTime" in event else None)
+    return [("title", "Event title", 1, True, 200, event.get("title", "")),
+            ("date", "Date (YYYY-MM-DD)", 1, True, 10, start.strftime("%Y-%m-%d") if start else ""),
+            ("start", "Start time only (6:00 PM or 18:00)", 1, True, 20, start.strftime("%I:%M %p") if start else ""),
+            ("zone", "Timezone (e.g. Pacific or Eastern)", 1, True, 64, "Eastern" if start else ""),
+            ("description", "Details (include any end time here)", 2, False, 3500, event.get("description", ""))]
 
 
 def receive(cfg, store, packet):
@@ -111,10 +161,7 @@ def receive(cfg, store, packet):
         if kind not in {"standard", "wowretail1", "wowretail2"} or not channel.isdecimal():
             raise Denied("Invalid event channel or template")
         if name == "create":
-            return modal(PREFIX + "create:" + channel + ":" + kind, "Create raid signup", [
-                ("title", "Event title", 1, True, 200),
-                ("when", "Date + offset: 2026-09-12T18:00-07:00", 1, True, 40),
-                ("description", "Details", 2, False, 3500)])
+            return modal(PREFIX + "create:" + channel + ":" + kind, "Create raid signup", event_fields())
         body = {"operation": "create", "channel": channel, "template": kind,
                 "title": options.get("title", ""), "when": options.get("when", ""),
                 "description": options.get("description", "")}
@@ -130,7 +177,8 @@ def receive(cfg, store, packet):
             if not int(member.get("permissions", "0")) & (8 | 32):
                 raise Denied("Administrator or Manage Server permission is required")
             body = {"operation": "create", "channel": parts[1], "template": parts[2],
-                    "title": fields.get("title", ""), "when": fields.get("when", ""),
+                    "title": fields.get("title", ""),
+                    "when": datetime.fromtimestamp(form_start(fields), timezone.utc).isoformat(),
                     "description": fields.get("description", "")}
             parse_start(body["when"])
         else:
@@ -198,11 +246,7 @@ def receive(cfg, store, packet):
                 # only to avoid handing everyone an edit form.
                 if not int(member.get("permissions", "0")) & (8 | 32) and str(event.get("leaderId")) != actor:
                     raise Denied("Only the event leader or a server manager can edit this event")
-                when = datetime.fromtimestamp(event["startTime"], timezone.utc).isoformat()
-                return modal(PREFIX + "edit-save:" + row["id"] + ":" + str(row["revision"]), "Edit raid signup", [
-                    ("title", "Event title", 1, True, 200, event.get("title", "")),
-                    ("when", "Date + offset: 2026-09-12T18:00-07:00", 1, True, 40, when),
-                    ("description", "Details", 2, False, 3500, event.get("description", ""))])
+                return modal(PREFIX + "edit-save:" + row["id"] + ":" + str(row["revision"]), "Edit raid signup", event_fields(event))
             value = ""
             if operation == "choose" and packet["type"] == 3:
                 values = data.get("values", [])
@@ -216,7 +260,7 @@ def receive(cfg, store, packet):
             elif operation == "set-status" and packet["type"] == 3 and len(parts) == 3:
                 operation, value = "status", parts[2]
             elif operation == "edit-save" and packet["type"] == 5 and len(parts) == 3:
-                start = parse_start(fields.get("when", ""))
+                start = form_start(fields)
                 operation, value = "edit", {"title": fields.get("title", ""),
                     "description": fields.get("description", ""), "startTime": start, "closingTime": start}
             elif operation != "withdraw" or packet["type"] != 3:
@@ -227,7 +271,11 @@ def receive(cfg, store, packet):
             if operation == "edit":
                 body["revision"] = int(parts[2])
     store.queue("raid-" + packet["id"], cfg.guild_id, actor, "raid", actor, body)
-    return reply("Your raid request is queued. The signup card will update after your access is checked.")
+    confirmation = "Your raid request is queued. The signup card will update after your access is checked."
+    if body["operation"] in {"create", "edit"}:
+        start = parse_start(body["when"]) if body["operation"] == "create" else body["value"]["startTime"]
+        confirmation += f"\nStart: <t:{start}:F> (shown in your local timezone)."
+    return reply(confirmation)
 
 
 async def execute(cfg, store, api, job):

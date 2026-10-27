@@ -52,6 +52,50 @@ class RaidDiscordTests(unittest.TestCase):
             with self.assertRaises(Denied):
                 service.parse_start(value)
 
+    @patch("greybot_control.raid_discord.time.time", return_value=1792360800)
+    def test_time_range_cannot_become_a_timezone_offset(self, now):
+        for value in ("2026-10-24T18:00-20:00", "2026-10-24T18:00+20:00"):
+            with self.assertRaises(Denied):
+                service.parse_start(value)
+        self.assertEqual(service.parse_start("2026-10-24T18:00-07:00"), 1792890000)
+        with self.assertRaises(Denied):
+            service.form_start({"when": "2026-10-24T18:00-20:00"})
+
+    @patch("greybot_control.raid_discord.time.time", return_value=1792360800)
+    def test_guided_creation_resolves_timezone_and_confirms_local_start(self, now):
+        form = service.receive(self.cfg, self.store, self.packet)
+        inputs = [r["components"][0] for r in form["data"]["components"]]
+        self.assertEqual([i["custom_id"] for i in inputs], ["title", "date", "start", "zone", "description"])
+        self.assertNotIn("value", inputs[3])  # creator explicitly chooses their timezone
+        fields = {"title": "Raid", "date": "2026-10-24", "start": "6:00 PM", "zone": "Pacific", "description": "Until 8 PM"}
+        packet = {**self.packet, "type": 5, "data": {
+            "custom_id": form["data"]["custom_id"],
+            "components": [{"components": [{"custom_id": k, "value": v}]} for k, v in fields.items()]}}
+        response = service.receive(self.cfg, self.store, packet)
+        self.assertIn("<t:1792890000:F>", response["data"]["content"])
+        job = json.loads(self.store.jobs("1")[0]["body"])
+        self.assertEqual(job["when"], "2026-10-25T01:00:00+00:00")
+        for start in ("18:00-20:00", "6-8 PM", "24:00", "13:00 PM"):
+            with self.assertRaises(Denied):
+                service.form_start({**fields, "start": start})
+        for zone in ("", "-20:00", "Not/AZone"):
+            with self.assertRaises(Denied):
+                service.form_start({**fields, "zone": zone})
+        self.assertEqual(service.form_start({**fields, "start": "18:00", "zone": "America/Los_Angeles"}), 1792890000)
+        self.assertEqual(service.form_start({**fields, "start": "21:00", "zone": "Eastern"}), 1792890000)
+
+    @patch("greybot_control.raid_discord.time.time", return_value=1792360800)
+    def test_guided_times_handle_dst_and_edit_roundtrip(self, now):
+        for day, clock in (("2026-11-01", "1:30 AM"), ("2027-03-14", "2:30 AM")):
+            with self.assertRaisesRegex(Denied, "skipped or repeated"):
+                service.form_start({"date": day, "start": clock, "zone": "Eastern"})
+        start = service.form_start({"date": "2026-11-07", "start": "6:00 PM", "zone": "Pacific"})
+        self.assertEqual(datetime.fromtimestamp(start, timezone.utc).isoformat(), "2026-11-08T02:00:00+00:00")
+        fields = {row[0]: row[-1] for row in service.event_fields({"startTime": start})}
+        self.assertEqual(fields["zone"], "Eastern")
+        self.assertEqual(fields["start"], "09:00 PM")
+        self.assertEqual(service.form_start(fields), start)
+
     def test_role_buttons_filter_private_specializations_without_page_buttons(self):
         event = {"title": "Raid", "leaderId": "3", "channelId": "2", "startTime": 9999999999,
                  "closingTime": 9999999999, "state": "open", "signUps": [],
